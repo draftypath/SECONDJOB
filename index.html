@@ -330,27 +330,31 @@
             color: var(--foreground);
             z-index: 50;
             font-family: 'Roboto Mono', monospace;
+            overflow: hidden;
         }
 
-        #game-ui { display: flex; height: 100%; width: 100%; padding: 1rem; }
+        #game-ui { display: flex; height: 100%; width: 100%; padding: 1rem; position: relative; }
         
         .global-info-panel {
-            flex: 0 1 240px;
-            border-right: 1px solid var(--border-color);
+            flex-shrink: 0;
+            width: 240px;
             padding-right: 1rem;
             display: flex;
             flex-direction: column;
-            min-width: 0;
             overflow-y: auto;
+            position: relative;
         }
 
         .game-main-area {
-            flex: 1 1 0;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             padding-left: 1rem;
             min-width: 0;
         }
+
+        #panel-toggle-btn { display: none; }
+        .panel-content-wrapper { min-width: calc(240px - 1rem); }
 
         #game-specific-area { flex-grow: 1; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; overflow: hidden; }
         #game-specific-info-area { padding: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); }
@@ -486,7 +490,6 @@
             to { transform: rotate(-90deg); }
         }
         
-        /* This is the magic: it shows the overlay ONLY on mobile-sized screens in portrait mode */
         @media only screen and (max-width: 768px) and (orientation: portrait) {
             #rotate-overlay {
                 display: flex;
@@ -497,11 +500,68 @@
         }
         /* --- END: ROTATION OVERLAY STYLES --- */
 
+        /* --- START: MOBILE LANDSCAPE COLLAPSIBLE PANEL --- */
+        @media (max-width: 900px) and (orientation: landscape) {
+            #game-ui {
+                padding-left: 50px; /* Make space for the collapsed tab */
+            }
+
+            .global-info-panel {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 200px; /* A bit smaller for mobile */
+                transform: translateX(-200px); /* Fully hidden off-screen */
+                transition: transform 0.3s ease-in-out;
+                z-index: 10;
+                background: #0a0a0a;
+                padding-top: 1rem;
+            }
+
+            .global-info-panel.is-open {
+                transform: translateX(0);
+            }
+            .panel-content-wrapper {
+                min-width: calc(200px - 1rem); /* Match smaller width */
+            }
+            
+            .game-main-area {
+                padding-left: 0;
+            }
+
+            #panel-toggle-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                left: 1rem;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 40px;
+                height: 60px;
+                background-color: #1a1a1a;
+                border: 1px solid var(--border-color);
+                cursor: pointer;
+                color: var(--primary-accent);
+                z-index: 5;
+            }
+            
+            #panel-toggle-btn svg {
+                width: 24px;
+                height: 24px;
+                transition: transform 0.3s ease;
+            }
+
+            .global-info-panel.is-open ~ #panel-toggle-btn svg {
+                transform: rotate(180deg);
+            }
+        }
+        /* --- END: MOBILE LANDSCAPE COLLAPSIBLE PANEL --- */
     </style>
 </head>
 <body>
 
-    <!-- NEW: Rotate Overlay -->
     <div id="rotate-overlay">
         <div class="rotate-overlay-content">
             <div class="rotate-icon">
@@ -631,31 +691,38 @@
                 <button id="overlay-action-btn">INITIATE</button>
             </div>
             <div id="game-ui">
+                <button id="panel-toggle-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </button>
                 <div class="global-info-panel">
-                    <div class="info-box">
-                        <h3>// SESSION_CONTROL</h3>
-                        <button id="exit-arcade-btn">[ Return to Main Page ]</button>
-                    </div>
-                    <div class="info-box">
-                        <h3>// GLOBAL_STATS</h3>
-                        <p>Cycle: <span id="cycle-display">1</span></p>
-                        <p>Total Score: <span id="total-score-display">0</span></p>
-                        <p>Current Game: <span id="current-game-display">--</span></p>
-                    </div>
-                     <div class="info-box">
-                        <h3>// PROGRESS</h3>
-                        <div class="progress-bars">
-                            <div class="progress-bar-container">
-                                <div id="cycle-fill" class="progress-bar-fill"></div>
-                                <div id="cycle-label" class="progress-bar-label">CYCLE</div>
-                            </div>
-                            <div class="progress-bar-container">
-                                <div id="wave-fill" class="progress-bar-fill"></div>
-                                <div id="wave-label" class="progress-bar-label">WAVE</div>
+                    <div class="panel-content-wrapper">
+                        <div class="info-box">
+                            <h3>// SESSION_CONTROL</h3>
+                            <button id="exit-arcade-btn">[ Return to Main Page ]</button>
+                        </div>
+                        <div class="info-box">
+                            <h3>// GLOBAL_STATS</h3>
+                            <p>Cycle: <span id="cycle-display">1</span></p>
+                            <p>Total Score: <span id="total-score-display">0</span></p>
+                            <p>Current Game: <span id="current-game-display">--</span></p>
+                        </div>
+                         <div class="info-box">
+                            <h3>// PROGRESS</h3>
+                            <div class="progress-bars">
+                                <div class="progress-bar-container">
+                                    <div id="cycle-fill" class="progress-bar-fill"></div>
+                                    <div id="cycle-label" class="progress-bar-label">CYCLE</div>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div id="wave-fill" class="progress-bar-fill"></div>
+                                    <div id="wave-label" class="progress-bar-label">WAVE</div>
+                                </div>
                             </div>
                         </div>
+                        <textarea id="log-display" readonly rows="10" style="width: 100%; background: #111; color: #ccc; border: 1px solid var(--border-color); font-size: 0.8em;"></textarea>
                     </div>
-                    <textarea id="log-display" readonly rows="10" style="width: 100%; background: #111; color: #ccc; border: 1px solid var(--border-color); font-size: 0.8em;"></textarea>
                 </div>
                 <div class="game-main-area">
                     <div id="game-specific-area"></div>
@@ -899,7 +966,30 @@
         const ArcadeManager = {
             currentCycle: 1, currentGameIndex: 0, totalScore: 0, GAMES_PER_CYCLE: 3, playsThisCycle: 0, MAX_CYCLES: 5, gameModules: [], availableGames: [],
             dom: { overlayTransitionInfo: document.getElementById('overlay-transition-info'), cycleDisplay: document.getElementById('cycle-display'), totalScoreDisplay: document.getElementById('total-score-display'), currentGameDisplay: document.getElementById('current-game-display'), gameSpecificArea: document.getElementById('game-specific-area'), gameSpecificInfoArea: document.getElementById('game-specific-info-area'), logDisplay: document.getElementById('log-display'), overlay: document.getElementById('overlay'), overlayTitle: document.getElementById('overlay-title'), overlayConsoleText: document.getElementById('overlay-console-text'), overlayActionBtn: document.getElementById('overlay-action-btn'), bootSequenceDisplay: document.getElementById('boot-sequence-display'), cycleFill: document.getElementById('cycle-fill'), waveFill: document.getElementById('wave-fill'), cycleLabel: document.getElementById('cycle-label'), waveLabel: document.getElementById('wave-label'), },
-            init() { this.log("ArcadeManager initializing..."); this.gameModules = [MacrodataRefinementGame, SignalSequencerGame]; this.availableGames = [...this.gameModules]; this.dom.overlayActionBtn.onclick = () => this.startGameSequence(); document.getElementById('exit-arcade-btn').onclick = () => window.location.reload(); this.showBootScreen(); },
+            init() { 
+                this.log("ArcadeManager initializing..."); 
+                this.gameModules = [MacrodataRefinementGame, SignalSequencerGame]; 
+                this.availableGames = [...this.gameModules]; 
+                this.dom.overlayActionBtn.onclick = () => this.startGameSequence(); 
+                document.getElementById('exit-arcade-btn').onclick = () => window.location.reload(); 
+                
+                const panelToggleBtn = document.getElementById('panel-toggle-btn');
+                const infoPanel = document.querySelector('.global-info-panel');
+                if (panelToggleBtn && infoPanel) {
+                    panelToggleBtn.addEventListener('click', () => {
+                        infoPanel.classList.toggle('is-open');
+                        
+                        setTimeout(() => {
+                            const currentGame = this.gameModules[this.currentGameIndex];
+                            if (currentGame && typeof currentGame.resizeGrid === 'function') {
+                                currentGame.resizeGrid();
+                            }
+                        }, 300);
+                    });
+                }
+
+                this.showBootScreen(); 
+            },
             showBootScreen() { this.dom.overlay.classList.remove('console-mode'); this.dom.overlayTransitionInfo.style.display = 'none'; this.dom.overlayTransitionInfo.textContent = ''; this.dom.overlayConsoleText.style.display = 'block'; this.dom.overlay.style.display = 'flex'; this.dom.overlayTitle.textContent = "SYSTEM BOOT"; this.dom.bootSequenceDisplay.style.display = 'block'; this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayActionBtn.textContent = "INITIATE SEQUENCE"; this.dom.overlayActionBtn.style.display = 'none'; const bootMsg = `> BOOTING grdn_OS v3.2…\n> Loading Game Modules:\n> - MACRODATA_RFN.MOD ......... [LOADED]\n> - SIGNAL_SEQUENCER.MOD ...... [LOADED]\n> WELCOME, OPERATIVE.\n> OBJECTIVE: Complete 5 cycles of increasing complexity.\n> Each cycle in grdn_OS contains 3 forking paths.\n>\n> Press 'INITIATE SEQUENCE' to begin.`; this.typeMessage( this.dom.overlayConsoleText, bootMsg, () => { this.dom.overlayActionBtn.style.display = 'block' } ); },
             typeMessage(element, message, callback, index = 0, speed = 15) { if (index < message.length) { element.innerHTML += message[index] === '\n' ? '<br>' : message[index]; element.scrollTop = element.scrollHeight; setTimeout(() => this.typeMessage(element, message, callback, index + 1, speed), speed); } else { if (callback) callback(); } },
             startGameSequence() { this.currentCycle = 1; this.playsThisCycle = 0; this.totalScore = 0; this.lastScoreDelta = 0; this.updateGlobalUI(); this.log("New game sequence started."); this.dom.overlay.classList.add('console-mode'); this.dom.bootSequenceDisplay.style.display = 'none'; this.dom.overlayConsoleText.style.display = 'block'; this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayTitle.textContent = "CHOOSE YOUR PATH"; const prompt = "Select any of the two games below to begin."; this.typeMessage( this.dom.overlayConsoleText, prompt + "\n\n", () => this.showFork() ); },
@@ -964,9 +1054,22 @@
                 const binsEl = document.getElementById('mdr-bins');
                 if (!gridEl) return;
                 const binAreaHeight = 40;
-                const availableWidth = this.container.offsetWidth - 20;
-                const availableHeight = this.container.offsetHeight - binAreaHeight;
-                const maxContainerSize = Math.min(availableWidth, availableHeight);
+                let availableWidth = this.container.offsetWidth - 20;
+                let availableHeight = this.container.offsetHeight - binAreaHeight;
+                
+                // --- NEW LOGIC FOR MOBILE LANDSCAPE ---
+                const isMobileLandscape = window.matchMedia("(max-width: 900px) and (orientation: landscape)").matches;
+                let maxContainerSize;
+
+                if (isMobileLandscape) {
+                    this.container.style.overflowY = 'auto'; // Allow scrolling
+                    maxContainerSize = availableWidth; // Base size on width
+                } else {
+                    this.container.style.overflowY = 'hidden'; // No scroll on desktop
+                    maxContainerSize = Math.min(availableWidth, availableHeight); // Original square logic
+                }
+                // --- END NEW LOGIC ---
+
                 const gridSize = this.gs.gridSize;
                 const gap = Math.max(2, Math.floor(maxContainerSize * 0.015));
                 const totalGapSize = (gridSize - 1) * gap;
