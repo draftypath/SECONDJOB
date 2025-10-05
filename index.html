@@ -478,7 +478,14 @@
             .card-difficulty, .card-how {
                 font-size: 0.8rem;
             }
+        /* --- START: FIX FOR MOBILE VIEWPORT --- */
+        @media (max-width: 768px) {
+            .site-wrapper {
+                width: 100vw;
+                height: calc(100vw * 9 / 16); /* Maintain 16:9 aspect ratio based on width */
+            }
         }
+        /* --- END: FIX FOR MOBILE VIEWPORT --- */
         /* --- END: NEW MOBILE STYLES FOR ARCADE OVERLAY --- */
 
     </style>
