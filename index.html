@@ -618,7 +618,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100); /* MODIFIED FOR MOBILE VIEWPORT FIX */
             background: rgba(0, 0, 0, 0.4);
             z-index: 10000;
             display: none;
@@ -655,7 +655,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100); /* MODIFIED FOR MOBILE VIEWPORT FIX */
             background: #000;
             z-index: 9999;
             display: none;
@@ -1687,6 +1687,17 @@
         };
 
         const SignalSequencerGame = { name: "Signal Sequencer", container: null, infoContainer: null, cycle: 1, callbacks: null, gs: {}, config: { gridSizes: [3, 4, 4, 5, 5], startSequenceLength: 2, maxSequenceLength: 10, flashSpeed: [600, 550, 500, 450, 400], timePerSignal: 5, }, init(container, infoContainer, cycle, callbacks) { this.container = container; this.infoContainer = infoContainer; this.cycle = cycle; this.callbacks = callbacks; const cIdx = Math.min(cycle - 1, this.config.gridSizes.length - 1); this.gs = { gridSize: this.config.gridSizes[cIdx], currentSequenceLength: this.config.startSequenceLength, maxLevel: this.config.maxSequenceLength - this.config.startSequenceLength + 1, flashSpeed: this.config.flashSpeed[cIdx], sequence: [], playerSequence: [], state: 'INSTRUCTIONS', timerId: null, timeLeft: 0 }; this.renderInstructions(); this.updateInfo(); }, start() { this.callbacks.addToLog("Signal Sequencer initialized. Waiting for user to start."); this.gs.timerId = setInterval(() => { if (this.gs.state === 'GUESSING') { this.gs.timeLeft--; this.updateInfo(); if (this.gs.timeLeft <= 0) this.gameOver("Time out!"); } }, 1000); }, end() { if (this.gs.timerId) clearInterval(this.gs.timerId); this.gs.state = 'OVER'; this.callbacks.addToLog("Signal Sequencer ended."); }, renderInstructions() { this.container.innerHTML = ` <div class="sequencer-instructions"> <h3>// Signal Sequencer</h3> <p>Memorize the signal sequence as it plays on the grid. <br> Repeat the sequence by clicking the pads in the correct order. <br> The sequence grows longer each round. Complete all levels to succeed.</p> <button id="sequencer-start-btn" class="find-jobs-btn">START</button> </div>`; document.getElementById('sequencer-start-btn').onclick = () => this.beginFirstRound(); }, beginFirstRound() { this.callbacks.addToLog("Signal Sequencer started."); this.renderGrid(); this.setupNextLevel(); }, setupNextLevel() { this.gs.playerSequence = []; this.gs.timeLeft = this.gs.currentSequenceLength * this.config.timePerSignal; this.generateSequence(); this.gs.state = 'WATCHING'; this.updateInfo(); this.callbacks.addToLog(`Presenting new sequence of length ${this.gs.currentSequenceLength}.`); setTimeout(() => this.showSequence(), 1000); }, updateInfo() { let status = this.gs.state; let levelInfo = `Level: ${this.gs.currentSequenceLength - this.config.startSequenceLength + 1}/${this.gs.maxLevel}`; if (this.gs.state === 'INSTRUCTIONS') { status = "AWAITING START"; levelInfo = "Standby"; } if (this.gs.state === 'GUESSING') status = `REPEAT (${this.gs.timeLeft}s)`; this.infoContainer.innerHTML = `<div>${levelInfo} | Status: ${status}</div>`; }, renderGrid() { const gridEl = document.createElement('div'); gridEl.className = 'grid-display'; gridEl.id = 'sequencer-grid'; gridEl.style.gridTemplateColumns = `repeat(${this.gs.gridSize}, 60px)`; gridEl.style.gridTemplateRows = `repeat(${this.gs.gridSize}, 60px)`; for (let r = 0; r < this.gs.gridSize; r++) { for (let c = 0; c < this.gs.gridSize; c++) { const cell = document.createElement('div'); cell.className = 'grid-cell sequencer-cell'; cell.dataset.r = r; cell.dataset.c = c; cell.addEventListener('click', () => this.handlePlayerClick(r, c)); gridEl.appendChild(cell); } } this.container.innerHTML = ''; this.container.appendChild(gridEl); }, generateSequence() { this.gs.sequence = []; for (let i = 0; i < this.gs.currentSequenceLength; i++) { this.gs.sequence.push([ Math.floor(Math.random() * this.gs.gridSize), Math.floor(Math.random() * this.gs.gridSize) ]); } }, showSequence() { let i = 0; const showNext = () => { if (i < this.gs.sequence.length && this.gs.state === 'WATCHING') { const [r, c] = this.gs.sequence[i]; this.flashCell(r, c); i++; setTimeout(showNext, this.gs.flashSpeed); } else { this.gs.state = 'GUESSING'; this.updateInfo(); this.callbacks.addToLog("Your turn."); } }; showNext(); }, flashCell(r, c, duration = 300) { const cell = this.container.querySelector(`.sequencer-cell[data-r="${r}"][data-c="${c}"]`); if (cell) { cell.classList.add('active'); setTimeout(() => cell.classList.remove('active'), duration); } }, handlePlayerClick(r, c) { if (this.gs.state !== 'GUESSING') return; this.flashCell(r, c); const currentStep = this.gs.playerSequence.length; const correctStep = this.gs.sequence[currentStep]; if (r === correctStep[0] && c === correctStep[1]) { this.gs.playerSequence.push([r, c]); if (this.gs.playerSequence.length === this.gs.sequence.length) { this.callbacks.addToLog("Correct sequence!"); this.callbacks.updateTotalScore(this.gs.currentSequenceLength * 20); if (this.gs.currentSequenceLength >= this.config.maxSequenceLength) { this.gameWon(); } else { this.gs.currentSequenceLength++; this.setupNextLevel(); } } } else { this.gameOver("Sequence mismatch."); } }, gameWon() { this.callbacks.addToLog("All sequences matched!"); const score = this.gs.timeLeft * 50; this.callbacks.onWin(score); this.end(); }, gameOver(reason) { if (this.gs.state === 'OVER') return; this.callbacks.addToLog(`Failed: ${reason}`); this.callbacks.onLoss(reason); this.end(); } };
+    </script>
+    
+    <!-- ADDED SCRIPT FOR MOBILE VIEWPORT FIX -->
+    <script>
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', setViewportHeight);
     </script>
 </body>
 </html>
