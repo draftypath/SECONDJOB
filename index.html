@@ -30,7 +30,6 @@
         
         html { 
             height: 100%;
-            /* --- THE CORE FIX: Make the base font size responsive to the window size --- */
             font-size: clamp(9px, 1vw, 14px);
         }
 
@@ -309,7 +308,7 @@
         }
         .light-mode-toggle:hover { color: var(--primary-accent); border-color: var(--primary-accent); }
         
-        @media (max-width: 40em) { /* Changed to em for responsive breakpoint */
+        @media (max-width: 40em) {
             .main-header { flex-direction: column; gap: 1rem; }
             .hero h1 { font-size: 2.5rem; height: 7rem; }
             #typing-text-secondary { font-size: 1.1rem; }
@@ -384,7 +383,7 @@
         #overlay-transition-info, #overlay-console-text { white-space: pre-wrap; line-height: 1.8; max-width: 80ch; width: 100%; }
         #overlay-action-btn { margin-top: 2rem; background: transparent; border: 1px solid var(--primary-accent); color: var(--primary-accent); padding: 1rem 2rem; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; font-family: 'Roboto Mono', monospace; }
         #overlay-action-btn:hover { background: var(--primary-accent); color: #000; }
-        .console-mode #overlay-console-text { text-align: left; background: #080808; padding: 1rem; border: 1px solid var(--border-color); max-width: 50rem; } /* Converted to rem */
+        .console-mode #overlay-console-text { text-align: left; background: #080808; padding: 1rem; border: 1px solid var(--border-color); max-width: 50rem; }
         .blinking-cursor { animation: blink 1s step-end infinite; }
         
         #choice-gallery { 
@@ -394,7 +393,7 @@
             gap: 2rem; 
             margin-top: 1.5rem; 
             width: 100%;
-            max-width: 50rem; /* Converted to rem */
+            max-width: 50rem;
         }
         .game-card { 
             border: 1px solid var(--border-color); 
@@ -402,7 +401,7 @@
             cursor: pointer; 
             transition: all 0.2s ease; 
             flex: 1;
-            min-width: 18rem; /* Converted to rem */
+            min-width: 18rem;
         }
 
         .game-card:hover { border-color: var(--primary-accent); background: #1a1a1a; }
@@ -449,9 +448,71 @@
         .sequencer-instructions { padding: 2rem; text-align: center; line-height: 1.8; }
         /* --- END: ARCADE GAME STYLES --- */
 
+        /* --- START: ROTATION OVERLAY STYLES --- */
+        #rotate-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            color: #fff;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .rotate-overlay-content p {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .rotate-icon {
+            width: 5rem;
+            height: 5rem;
+            border: 2px solid #555;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate-anim 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes rotate-anim {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-90deg); }
+        }
+        
+        /* This is the magic: it shows the overlay ONLY on mobile-sized screens in portrait mode */
+        @media only screen and (max-width: 768px) and (orientation: portrait) {
+            #rotate-overlay {
+                display: flex;
+            }
+            .site-wrapper {
+                display: none;
+            }
+        }
+        /* --- END: ROTATION OVERLAY STYLES --- */
+
     </style>
 </head>
 <body>
+
+    <!-- NEW: Rotate Overlay -->
+    <div id="rotate-overlay">
+        <div class="rotate-overlay-content">
+            <div class="rotate-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                </svg>
+            </div>
+            <p>Please rotate your device.</p>
+        </div>
+    </div>
 
     <div class="site-wrapper">
         <div id="glitch-overlay">
