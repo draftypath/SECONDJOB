@@ -6,7 +6,7 @@
     <title>Second Job | Your Next Opportunity</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Metal+Mania&family=Bahiana&display=swap" rel="stylesheet">
     <style>
         :root {
             --background: #0d0d0d;
@@ -57,6 +57,7 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
+            filter: brightness(80%) contrast(110%);
         }
         
         @media (min-aspect-ratio: 16/9) {
@@ -134,9 +135,9 @@
             background-color: var(--background);
             color: var(--foreground);
             overflow-y: auto;
-            transition: background-color 0.3s ease, color 0.3s ease;
             padding: 2rem; 
             z-index: 2;
+            transition: background-color 0.3s ease, color 0.3s ease, opacity 0.4s ease-in-out;
         }
         
         .container::after {
@@ -175,12 +176,63 @@
         .logo { font-size: 1.5rem; font-weight: 700; }
         .logo span { color: var(--primary-accent); }
         .main-nav a { margin-left: 1.5rem; font-size: 1rem; }
-        .hero { text-align: center; margin: 4rem 0; }
-        .hero h1 { font-size: 4.5rem; font-weight: 700; margin: 0 0 1rem 0; height: 10rem; }
-        #typing-text-secondary { display: block; font-size: 1.5rem; color: #aaa; margin-top: 0.5rem; }
+        
+        .hero { 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center; 
+            margin: 1rem 0;
+            position: relative;
+            z-index: 1;
+            min-height: 18rem;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                transparent 0,
+                rgba(0, 0, 0, 0.4) 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+        .hero h1 { 
+            font-weight: 700; 
+            margin: 0; 
+            font-size: clamp(2rem, 9vw, 5rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #typing-text-secondary { 
+            font-size: clamp(0.9rem, 3.5vw, 1.75rem);
+            color: #aaa; 
+            margin-top: 0.5rem; 
+        }
+        .hero p {
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            color: #aaa;
+            margin: 1.5rem 0 0 0;
+            padding: 0 1rem;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
+        }
+        .hero p.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         body.light-mode #typing-text-secondary { color: #555; }
         .typing-cursor { display: none; background-color: var(--foreground); width: 10px; height: 1.5rem; margin-left: 8px; animation: blink 1s step-end infinite; vertical-align: middle; }
-        .hero p { font-size: 1.2rem; color: #aaa; margin-bottom: 2.5rem; }
         body.light-mode .hero p { color: #666; }
         @keyframes blink { from, to { background-color: transparent; } 50% { background-color: var(--foreground); } }
         .search-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; background-color: rgba(var(--background-rgb), 0.5); border: 1px solid var(--border-color); padding: 1rem; margin-bottom: 3rem; }
@@ -310,8 +362,8 @@
         
         @media (max-width: 40em) {
             .main-header { flex-direction: column; gap: 1rem; }
-            .hero h1 { font-size: 2.5rem; height: 7rem; }
-            #typing-text-secondary { font-size: 1.1rem; }
+            .hero { margin: 1.5rem 0; min-height: 15rem; } 
+            .hero p { margin-bottom: 1.5rem; }
             .typing-cursor { height: 1.1rem; }
             .search-form { grid-template-columns: 1fr; }
             .job-card-header { flex-direction: column; }
@@ -331,29 +383,49 @@
             z-index: 50;
             font-family: 'Roboto Mono', monospace;
             overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
         }
 
-        #game-ui { display: flex; height: 100%; width: 100%; padding: 1rem; position: relative; }
+        /* MODIFIED: Add padding-left for button */
+        #game-ui { 
+            display: flex; 
+            height: 100%; 
+            width: 100%; 
+            padding: 1rem; 
+            position: relative; 
+            padding-left: 50px;
+        }
         
+        /* MODIFIED: Make panel collapsible by default */
         .global-info-panel {
-            flex-shrink: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
             width: 240px;
-            padding-right: 1rem;
+            transform: translateX(-240px);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+            background: #0a0a0a;
+            padding: 1rem 1rem 1rem 0;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            position: relative;
+        }
+        .global-info-panel.is-open {
+            transform: translateX(0);
         }
 
         .game-main-area {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-left: 1rem;
             min-width: 0;
+            /* MODIFIED: Remove padding-left as it's now on #game-ui */
+            padding-left: 0;
         }
 
-        #panel-toggle-btn { display: none; }
         .panel-content-wrapper { min-width: calc(240px - 1rem); }
 
         #game-specific-area { flex-grow: 1; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; overflow: hidden; }
@@ -368,6 +440,32 @@
         .progress-bar-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); color: white; mix-blend-mode: difference; font-size: 0.9em;}
         .progress-bars { display: flex; }
         
+        /* MODIFIED: Make button visible by default */
+        #panel-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 60px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            color: var(--primary-accent);
+            z-index: 5;
+        }
+        #panel-toggle-btn svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+        .global-info-panel.is-open ~ #panel-toggle-btn svg {
+            transform: rotate(180deg);
+        }
+
         #overlay { 
             position: absolute; 
             top: 0; 
@@ -382,7 +480,7 @@
             justify-content: center; 
             text-align: center; 
             padding: 1rem;
-            overflow-y: auto; /* <-- ADDED THIS LINE TO FIX MOBILE SCROLLING */
+            overflow-y: auto;
         }
         #overlay-title { font-size: 2.5rem; margin-bottom: 1rem; color: #a7a7a7; }
         #overlay-transition-info, #overlay-console-text { white-space: pre-wrap; line-height: 1.8; max-width: 80ch; width: 100%; }
@@ -501,64 +599,198 @@
         }
         /* --- END: ROTATION OVERLAY STYLES --- */
 
-        /* --- START: MOBILE LANDSCAPE COLLAPSIBLE PANEL --- */
+        /* MODIFIED: Removing mobile-only rules for panel */
         @media (max-width: 900px) and (orientation: landscape) {
-            #game-ui {
-                padding-left: 50px; /* Make space for the collapsed tab */
-            }
-
+            /* Styles are now global, but we can keep overrides here if needed */
             .global-info-panel {
-                position: absolute;
-                left: 0;
-                top: 0;
-                height: 100%;
-                width: 200px; /* A bit smaller for mobile */
-                transform: translateX(-200px); /* Fully hidden off-screen */
-                transition: transform 0.3s ease-in-out;
-                z-index: 10;
-                background: #0a0a0a;
-                padding-top: 1rem;
-            }
-
-            .global-info-panel.is-open {
-                transform: translateX(0);
+                width: 200px;
+                transform: translateX(-200px);
             }
             .panel-content-wrapper {
-                min-width: calc(200px - 1rem); /* Match smaller width */
-            }
-            
-            .game-main-area {
-                padding-left: 0;
-            }
-
-            #panel-toggle-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                left: 1rem;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 40px;
-                height: 60px;
-                background-color: #1a1a1a;
-                border: 1px solid var(--border-color);
-                cursor: pointer;
-                color: var(--primary-accent);
-                z-index: 5;
-            }
-            
-            #panel-toggle-btn svg {
-                width: 24px;
-                height: 24px;
-                transition: transform 0.3s ease;
-            }
-
-            .global-info-panel.is-open ~ #panel-toggle-btn svg {
-                transform: rotate(180deg);
+                min-width: calc(200px - 1rem);
             }
         }
-        /* --- END: MOBILE LANDSCAPE COLLAPSIBLE PANEL --- */
+        
+
+        /* --- START: HORROR SEQUENCE OVERLAYS --- */
+        #knock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #f0f0f0;
+            font-family: 'Metal Mania', cursive;
+            text-align: center;
+            cursor: default;
+            user-select: none;
+            padding: 1rem;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #knock-overlay span {
+            font-size: clamp(8rem, 25vw, 20rem);
+            line-height: 0.8;
+            text-shadow: 4px 4px 0px #1a1a1a, 8px 8px 15px rgba(0,0,0,0.5);
+            animation: knock-thump 0.5s ease-out;
+            opacity: 0;
+        }
+        #knock-overlay.active span:nth-child(1) { animation-delay: 0s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(2) { animation-delay: 0.6s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(3) { animation-delay: 1.2s; animation-fill-mode: forwards; }
+
+        @keyframes knock-thump {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #narrative-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, background-color 0.1s ease-in-out;
+        }
+        #narrative-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 1s ease-in-out;
+        }
+
+        @keyframes warp-effect {
+            0% { transform: scale(1.1) skew(0deg); filter: contrast(1.1); }
+            100% { transform: scale(1.15) skew(1deg); filter: contrast(1.2); }
+        }
+        #narrative-image.warping {
+            animation: warp-effect 0.2s linear infinite alternate;
+        }
+
+        #narrative-button-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+        .narrative-btn {
+            font-family: 'Bahiana', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #a0a0a0;
+            background-color: rgba(0,0,0,0.2);
+            border: 2px solid #4a0101;
+            padding: 0.5rem 2rem;
+            cursor: pointer;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+            box-shadow: inset 0 0 10px #220000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        .narrative-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        .narrative-btn:hover {
+            color: #ff4d4d;
+            border-color: #8b0000;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
+        }
+
+        /* --- START: "WOW FACTOR" DIALOG STYLES --- */
+        @keyframes pulse-border {
+            0% { border-color: rgba(204, 220, 215, 0.1); }
+            50% { border-color: rgba(204, 220, 215, 0.4); }
+            100% { border-color: rgba(204, 220, 215, 0.1); }
+        }
+        #dialog-container {
+            display: none;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 700px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+        #dialog-text-wrapper {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 2rem;
+            border: 1px solid rgba(204, 220, 215, 0.1);
+            animation: pulse-border 4s linear infinite;
+            clip-path: polygon(0% 15%, 5% 0%, 95% 0%, 100% 15%, 100% 85%, 95% 100%, 5% 100%, 0% 85%);
+        }
+        #dialog-text {
+            font-family: 'Bahiana', cursive;
+            color: #ccddd7;
+            text-shadow: 1px 1px 5px #000;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            letter-spacing: 1px;
+            text-align: center;
+            margin: 0;
+            min-height: 1.2em; 
+        }
+        .dialog-cursor {
+            display: inline-block;
+            background-color: #ccddd7;
+            width: 5px;
+            height: 3rem;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        #dialog-choices {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .dialog-choice-btn {
+            font-family: 'Bahiana', cursive;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            background: transparent;
+            border: none;
+            color: #8a9e97;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        .dialog-choice-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(204, 220, 215, 0.7);
+        }
+        /* --- END: NEW DIALOG STYLES --- */
+        
+        /* --- END: HORROR SEQUENCE OVERLAYS --- */
+
     </style>
 </head>
 <body>
@@ -572,6 +804,28 @@
                 </svg>
             </div>
             <p>Please rotate your device.</p>
+        </div>
+    </div>
+
+    <div id="knock-overlay">
+        <span>KNOCK</span>
+        <span>KNOCK</span>
+        <span>KNOCK</span>
+    </div>
+
+    <div id="narrative-overlay">
+        <img src="" alt="Narrative Scene" id="narrative-image">
+        
+        <div id="narrative-button-container">
+            <button id="narrative-btn-1" class="narrative-btn"></button>
+            <button id="narrative-btn-2" class="narrative-btn"></button>
+        </div>
+        
+        <div id="dialog-container">
+            <div id="dialog-text-wrapper">
+                <p id="dialog-text"></p>
+            </div>
+            <div id="dialog-choices"></div>
         </div>
     </div>
 
@@ -780,14 +1034,24 @@
                 }, 1000);
             }
 
-            setTimeout(() => {
-                triggerGlitch(glitchPairs[currentPairIndex]);
-                currentPairIndex = (currentPairIndex + 1) % glitchPairs.length;
-
+            function startGlitchLoop() {
+                // Clear any existing loop to prevent duplicates
+                clearInterval(glitchLoopInterval);
                 glitchLoopInterval = setInterval(() => {
                     triggerGlitch(glitchPairs[currentPairIndex]);
                     currentPairIndex = (currentPairIndex + 1) % glitchPairs.length;
                 }, 12000);
+            }
+
+            function stopGlitchLoop() {
+                clearInterval(glitchLoopInterval);
+                glitchOverlay.style.display = 'none'; // Explicitly hide it
+            }
+
+            setTimeout(() => {
+                triggerGlitch(glitchPairs[currentPairIndex]);
+                currentPairIndex = (currentPairIndex + 1) % glitchPairs.length;
+                startGlitchLoop();
             }, 6000);
 
             setInterval(() => {
@@ -798,11 +1062,11 @@
             }, 13000);
             
             const jobData = [
-                { id: 1, title: "Chief Executive Hodler", company: "Solana Capital", location: "Remote (Global)", posted: "3 minutes ago", tags: ["Executive", "Full-Time", "High-Risk"], description: "As the Chief Executive Hodler, you will be responsible for maintaining an unwavering grip on our digital asset portfolio through extreme market volatility. This is a leadership role requiring unparalleled conviction and a zen-like emotional state.", responsibilities: ["Maintaining composure during 90% drawdowns.", "Authoritatively dismissing FUD on all social platforms.", "Executing strategic 'buy the dip' orders with precision.", "Crafting long-form Twitter threads on the long-term vision."], qualifications: ["Minimum 2 cycles of crypto market experience.", "Demonstrably diamond hands (certification preferred).", "Proven ability to ignore all forms of market analysis.", "Expertise in crafting 'WAGMI' and 'This is fine' memes."] },
-                { id: 2, title: "Senior Shill Specialist", company: "Meme Ventures", location: "The Internet", posted: "1 hour ago", tags: ["Marketing", "Remote", "Performance-Based"], description: "We are seeking a highly motivated Shill Specialist to organically integrate our project's narrative across various online communities. Your mission is to generate authentic, grassroots hype without appearing inauthentic.", responsibilities: ["Subtly mentioning the project in unrelated conversations.", "Engaging with influencer posts to maximize visibility.", "Creating and disseminating high-quality, viral memes.", "Monitoring community sentiment and reporting key metrics."], qualifications: ["Active user on X, Telegram, and Reddit.", "A portfolio of successful, low-engagement shilling campaigns.", "Complete lack of shame.", "Ability to type 'LFG' with genuine enthusiasm."] },
-                { id: 3, title: "Lead FUD Attenuation Analyst", company: "Project Moonshot", location: "Remote", posted: "8 hours ago", tags: ["Security", "Analyst", "Full-Time"], description: "In this critical role, you will be the first line of defense against market FUD (Fear, Uncertainty, and Doubt). Your job is to analyze, categorize, and neutralize negative sentiment before it can impact the community's morale.", responsibilities: ["Proactively identifying sources of potential FUD.", "Developing data-driven counter-narratives.", "Engaging with concerned community members with calming, reassuring messages.", "Maintaining the official 'Reasons We're Bullish' documentation."], qualifications: ["PhD in Copium Studies or equivalent experience.", "Expert-level understanding of logical fallacies.", "Ability to remain stoic in the face of overwhelming evidence.", "Access to a high-quality .gif library."] },
-                { id: 4, title: "Junior Dip Buyer", company: "Diamond Hands LLC", location: "Your Mom's Basement", posted: "1 day ago", tags: ["Entry-Level", "Finance", "High-Growth"], description: "An exciting entry-level opportunity for an aspiring market participant. The Junior Dip Buyer will learn to identify and act on market downturns, contributing to the fund's long-term position. This is a fast-paced role with significant upward mobility.", responsibilities: ["Monitoring charts for 20+ hours a day.", "Executing buy orders when your gut tells you to.", "Suffering immense psychological pressure.", "Providing liquidity at the least logical moments."], qualifications: ["Access to a functional keyboard and mouse.", "More money than sense (preferred, but not required).", "An almost supernatural ability to buy at a temporary peak.", "Resilience and a short-term memory."] },
-                { id: 99, title: "System Technician [ACTIVATE]", company: "grdn_OS", location: "SYSTEM_ROOT", posted: "now", tags: ["Internal", "Diagnostics", "Gamified"], description: "Run system diagnostics.", responsibilities: ["Execute diagnostic sub-routines.", "Monitor system stability.", "Report anomalies."], qualifications: ["Level 3 Clearance.", "Authorized Personnel Only."] }
+                { id: 1, title: ".................", company: "Solana Capital", location: "Remote (Global)", posted: "3 minutes ago", tags: ["Executive", "Full-Time", "High-Risk"], description: "As the Chief Executive Hodler, you will be responsible for maintaining an unwavering grip on our digital asset portfolio through extreme market volatility. This is a leadership role requiring unparalleled conviction and a zen-like emotional state.", responsibilities: ["Maintaining composure during 90% drawdowns.", "Authoritatively dismissing FUD on all social platforms.", "Executing strategic 'buy the dip' orders with precision.", "Crafting long-form Twitter threads on the long-term vision."], qualifications: ["Minimum 2 cycles of crypto market experience.", "Demonstrably diamond hands (certification preferred).", "Proven ability to ignore all forms of market analysis.", "Expertise in crafting 'WAGMI' and 'This is fine' memes."] },
+                { id: 2, title: "........ .. .......", company: "Meme Ventures", location: "The Internet", posted: "1 hour ago", tags: ["Marketing", "Remote", "Performance-Based"], description: "We are seeking a highly motivated Shill Specialist to organically integrate our project's narrative across various online communities. Your mission is to generate authentic, grassroots hype without appearing inauthentic.", responsibilities: ["Subtly mentioning the project in unrelated conversations.", "Engaging with influencer posts to maximize visibility.", "Creating and disseminating high-quality, viral memes.", "Monitoring community sentiment and reporting key metrics."], qualifications: ["Active user on X, Telegram, and Reddit.", "A portfolio of successful, low-engagement shilling campaigns.", "Complete lack of shame.", "Ability to type 'LFG' with genuine enthusiasm."] },
+                { id: 3, title: "................. ....", company: "Project Moonshot", location: "Remote", posted: "8 hours ago", tags: ["Security", "Analyst", "Full-Time"], description: "In this critical role, you will be the first line of defense against market FUD (Fear, Uncertainty, and Doubt). Your job is to analyze, categorize, and neutralize negative sentiment before it can impact the community's morale.", responsibilities: ["Proactively identifying sources of potential FUD.", "Developing data-driven counter-narratives.", "Engaging with concerned community members with calming, reassuring messages.", "Maintaining the official 'Reasons We're Bullish' documentation."], qualifications: ["PhD in Copium Studies or equivalent experience.", "Expert-level understanding of logical fallacies.", "Ability to remain stoic in the face of overwhelming evidence.", "Access to a high-quality .gif library."] },
+                { id: 4, title: "........... .....", company: "Diamond Hands LLC", location: "Your Mom's Basement", posted: "1 day ago", tags: ["Entry-Level", "Finance", "High-Growth"], description: "An exciting entry-level opportunity for an aspiring market participant. The Junior Dip Buyer will learn to identify and act on market downturns, contributing to the fund's long-term position. This is a fast-paced role with significant upward mobility.", responsibilities: ["Monitoring charts for 20+ hours a day.", "Executing buy orders when your gut tells you to.", "Suffering immense psychological pressure.", "Providing liquidity at the least logical moments."], qualifications: ["Access to a functional keyboard and mouse.", "More money than sense (preferred, but not required).", "An almost supernatural ability to buy at a temporary peak.", "Resilience and a short-term memory."] },
+                { id: 99, title: "................. [ACTIVATE]", company: "grdn_OS", location: "SYSTEM_ROOT", posted: "now", tags: ["Internal", "Diagnostics", "Gamified"], description: "Run system diagnostics.", responsibilities: ["Execute diagnostic sub-routines.", "Monitor system stability.", "Report anomalies."], qualifications: ["Level 3 Clearance.", "Authorized Personnel Only."] }
             ];
             const buyLink = "https://dexscreener.com/solana/YOUR_TOKEN_ADDRESS";
             const mainTypingElement = document.getElementById('typing-text-main');
@@ -811,6 +1075,8 @@
             const secondaryText = "A Second Job Awaits.";
             const typingSpeed = 100;
             const cursorElement = document.querySelector('.typing-cursor');
+            const heroTagline = document.querySelector('.hero p');
+
             function typeWriter(element, text, callback) {
                 let i = 0;
                 const cursor = element.querySelector('.typing-cursor');
@@ -824,11 +1090,14 @@
                 }
                 type();
             }
+
             typeWriter(mainTypingElement, mainText, () => {
                 typeWriter(secondaryTypingElement, secondaryText, () => {
                     cursorElement.style.display = 'inline-block';
+                    heroTagline.classList.add('fade-in'); 
                 });
             });
+
             const jobListingsElement = document.getElementById('job-listings');
             const whatInput = document.getElementById('what-input');
             const whereInput = document.getElementById('where-input');
@@ -865,6 +1134,7 @@
             const openJobModal = (jobId) => {
                 const job = jobData.find(j => j.id == jobId);
                 if (!job) return;
+                stopGlitchLoop();
                 document.getElementById('modal-job-title').textContent = job.title;
                 document.getElementById('modal-company-info').textContent = `${job.company} • ${job.location}`;
                 document.getElementById('modal-description').textContent = job.description;
@@ -878,6 +1148,7 @@
             const closeJobModal = () => {
                 jobModal.classList.remove('active');
                 siteWrapper.classList.remove('modal-is-active');
+                startGlitchLoop();
             };
 
             jobListingsElement.addEventListener('click', (e) => {
@@ -911,6 +1182,7 @@
             }
 
             const openCameraModal = () => {
+                stopGlitchLoop();
                 showImage(0);
                 cameraModal.classList.add('active');
                 siteWrapper.classList.add('modal-is-active');
@@ -918,6 +1190,7 @@
             const closeCameraModal = () => {
                 cameraModal.classList.remove('active');
                 siteWrapper.classList.remove('modal-is-active');
+                startGlitchLoop();
             };
             
             cameraBtn.addEventListener('click', (e) => {
@@ -951,15 +1224,258 @@
             });
 
             function launchArcade() {
-                clearInterval(glitchLoopInterval);
-                document.querySelector('.container').style.display = 'none';
-                document.getElementById('glitch-overlay').style.display = 'none';
-                document.getElementById('arcade-container').style.display = 'block';
-                ArcadeManager.init();
+                stopGlitchLoop();
+                const mainContainer = document.querySelector('.container');
+                const arcadeContainer = document.getElementById('arcade-container');
+                
+                mainContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    mainContainer.style.display = 'none';
+                    arcadeContainer.style.display = 'block';
+                    
+                    requestAnimationFrame(() => {
+                        arcadeContainer.style.opacity = '1';
+                    });
+
+                    ArcadeManager.init();
+                }, 400);
             }
+            
+            window.startGlitchLoop = startGlitchLoop;
+            
+            NarrativeManager.init();
         });
     </script>
     <script>
+        // --- NARRATIVE MANAGER SCRIPT ---
+        const NarrativeManager = {
+            overlay: null,
+            imageEl: null,
+            btn1: null,
+            btn2: null,
+            dialogContainer: null,
+            dialogTextEl: null,
+            dialogChoicesEl: null,
+            
+            FADE_DURATION: 400,
+            currentImageSrc: '',
+
+            dialogTree: {
+                start: {
+                    text: "You alone?",
+                    image: 'door.png',
+                    choices: [
+                        { text: "I'm alone", next: "silent_1" },
+                        { text: "I'm not alone", next: "who_is_this_1" }
+                    ]
+                },
+                silent_1: {
+                    text: "I know you're in there... It's me. Please, just let me in.",
+                    image: 'door.png',
+                    choices: [
+                        { text: "[Wait]", next: "heard_that" }
+                    ]
+                },
+                who_is_this_1: {
+                    text: "You don't recognize my voice? Look, I want to help.",
+                    image: 'door.png',
+                    choices: [
+                        { text: "[Listen]", next: "heard_that" }
+                    ]
+                },
+                heard_that: {
+                    text: "Wait... did you hear that? Please, just let me in.",
+                    image: 'door2.png', 
+                    blinks: 2, 
+                    choices: [
+                        { text: "[Unlock the door]", next: "end_scene_1" },
+                        { text: "What did you hear?", next: "i_miss_you" }
+                    ]
+                },
+                i_miss_you: {
+                    text: "Please... just let me in. I miss you.",
+                    image: 'door2.png',
+                    choices: [
+                        { text: "How did you find me?", next: "the_letter_reveal" }
+                    ]
+                },
+                the_letter_reveal: {
+                    text: "Here... This was given to me. From that 'Second Job' place...",
+                    image: 'door3.png',
+                    choices: [
+                        { text: "[Let her in]", next: "end_scene_1"}
+                    ]
+                },
+                end_scene_1: {
+                    text: "(The lock clicks...)",
+                    image: 'door.png'
+                }
+            },
+            
+            init() {
+                this.overlay = document.getElementById('narrative-overlay');
+                this.imageEl = document.getElementById('narrative-image');
+                this.btn1 = document.getElementById('narrative-btn-1');
+                this.btn2 = document.getElementById('narrative-btn-2');
+                this.dialogContainer = document.getElementById('dialog-container');
+                this.dialogTextEl = document.getElementById('dialog-text');
+                this.dialogChoicesEl = document.getElementById('dialog-choices');
+            },
+
+            start() {
+                this.overlay.style.display = 'flex';
+                requestAnimationFrame(() => { this.overlay.style.opacity = '1'; });
+
+                setTimeout(() => {
+                    this.btn1.textContent = "Go see the front door?";
+                    this.btn2.style.display = 'none';
+                    this.btn1.style.display = 'block';
+                    
+                    this.imageEl.src = 'knock.png';
+                    this.currentImageSrc = 'knock.png';
+                    this.imageEl.style.opacity = '1';
+
+                    setTimeout(() => {
+                        this.btn1.classList.add('visible');
+                    }, 2500);
+
+                    this.btn1.onclick = () => this.hallwaySequence();
+                }, this.FADE_DURATION);
+            },
+
+            hallwaySequence() {
+                this.btn1.classList.remove('visible');
+                this.btn1.style.display = 'none';
+                this.imageEl.style.opacity = '0';
+                
+                setTimeout(() => {
+                    const hallwayImages = ['hallway.png', 'hallway2.png'];
+                    const flashDelays = [100, 80, 120, 70, 250, 60, 100, 50, 400, 80, 110, 60, 90, 150, 300, 70];
+                    let currentImageIndex = 0;
+                    let flashIndex = 0;
+
+                    const performFlash = () => {
+                        if (flashIndex >= flashDelays.length) {
+                            this.imageEl.classList.remove('warping');
+                            this.imageEl.style.opacity = '0';
+                            
+                            setTimeout(() => {
+                                this.overlay.style.backgroundColor = 'rgba(0,0,0,1)';
+                                setTimeout(() => {
+                                    this.overlay.style.backgroundColor = '#000';
+                                    this.imageEl.src = 'hallway3.png';
+                                    this.currentImageSrc = 'hallway3.png';
+                                    this.imageEl.style.opacity = '1';
+    
+                                    this.btn2.textContent = "See who is behind the door...";
+                                    this.btn2.style.display = 'block';
+                                    setTimeout(() => this.btn2.classList.add('visible'), 1000);
+                                    this.btn2.onclick = () => this.finalScene();
+                                }, 1000); // Hold black screen
+                            }, this.FADE_DURATION);
+                            return;
+                        }
+                        
+                        currentImageIndex = (currentImageIndex + 1) % hallwayImages.length;
+                        const newImageSrc = hallwayImages[currentImageIndex];
+                        this.imageEl.src = newImageSrc;
+                        
+                        if (newImageSrc === 'hallway.png') {
+                            this.imageEl.classList.add('warping');
+                        } else {
+                            this.imageEl.classList.remove('warping');
+                        }
+                        
+                        this.imageEl.style.opacity = 0.7 + Math.random() * 0.3;
+
+                        setTimeout(performFlash, flashDelays[flashIndex]);
+                        flashIndex++;
+                    };
+                    
+                    performFlash();
+                    
+                }, this.FADE_DURATION);
+            },
+
+            finalScene() {
+                this.btn2.classList.remove('visible');
+                this.btn2.style.display = 'none';
+
+                setTimeout(() => {
+                    this.startDialog('start');
+                }, 2000);
+            },
+            
+            // --- THIS IS THE CORRECTED FUNCTION ---
+            startDialog(nodeKey) {
+                const node = this.dialogTree[nodeKey];
+                if (!node) return;
+
+                const showDialog = () => {
+                    if (this.dialogContainer.style.display !== 'block') {
+                        this.dialogContainer.style.display = 'block';
+                        requestAnimationFrame(() => this.dialogContainer.style.opacity = '1');
+                    }
+                    
+                    this.dialogChoicesEl.innerHTML = '';
+
+                    if (node.blinks) {
+                        setTimeout(() => this.performBlinks(node.blinks), 800);
+                    }
+
+                    this.typeDialog(node.text, () => {
+                        if (node.choices) {
+                            node.choices.forEach(choice => {
+                                const choiceBtn = document.createElement('button');
+                                choiceBtn.className = 'dialog-choice-btn';
+                                choiceBtn.textContent = choice.text;
+                                choiceBtn.onclick = () => this.startDialog(choice.next);
+                                this.dialogChoicesEl.appendChild(choiceBtn);
+                            });
+                        }
+                    });
+                };
+
+                if (node.image && this.currentImageSrc !== node.image) {
+                    showDialog();
+                    this.imageEl.style.opacity = 0; 
+                    
+                    setTimeout(() => {
+                        this.imageEl.src = node.image;
+                        this.currentImageSrc = node.image;
+                        this.imageEl.style.opacity = 1;
+                    }, this.FADE_DURATION);
+                } else {
+                    showDialog();
+                }
+            },
+
+            performBlinks(count) {
+                if (count <= 0) return;
+                this.overlay.style.backgroundColor = 'rgba(0,0,0,1)';
+                setTimeout(() => {
+                    this.overlay.style.backgroundColor = '#000';
+                    setTimeout(() => this.performBlinks(count - 1), 600);
+                }, 100);
+            },
+
+            typeDialog(text, callback, index = 0, speed = 90) {
+                if (index === 0) {
+                    this.dialogTextEl.innerHTML = '';
+                }
+                
+                if (index < text.length) {
+                    this.dialogTextEl.innerHTML = text.substring(0, index + 1) + '<span class="dialog-cursor"></span>';
+                    setTimeout(() => this.typeDialog(text, callback, index + 1, speed), speed);
+                } else {
+                    this.dialogTextEl.innerHTML = text; 
+                    if (callback) callback();
+                }
+            }
+        };
+
+        // --- ARCADE MANAGER SCRIPT ---
         const isMobile = matchMedia('(pointer: coarse)').matches;
         const tapOpts = { passive: true };
         const tapBlock = { passive: false };
@@ -972,7 +1488,50 @@
                 this.gameModules = [MacrodataRefinementGame, SignalSequencerGame]; 
                 this.availableGames = [...this.gameModules]; 
                 this.dom.overlayActionBtn.onclick = () => this.startGameSequence(); 
-                document.getElementById('exit-arcade-btn').onclick = () => window.location.reload(); 
+                
+                document.getElementById('exit-arcade-btn').onclick = () => {
+                    const arcadeContainer = document.getElementById('arcade-container');
+                    const mainContainer = document.querySelector('.container');
+                    
+                    arcadeContainer.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        arcadeContainer.style.display = 'none';
+                        mainContainer.style.display = 'block';
+                        requestAnimationFrame(() => {
+                            mainContainer.style.opacity = '1';
+                        });
+
+                        if(typeof window.startGlitchLoop === 'function') {
+                            window.startGlitchLoop();
+                        }
+                        
+                        setTimeout(() => {
+                            const knockOverlay = document.getElementById('knock-overlay');
+                            knockOverlay.style.display = 'flex';
+                            requestAnimationFrame(() => knockOverlay.classList.add('active'));
+
+                            setTimeout(() => {
+                                knockOverlay.style.opacity = '0';
+                                knockOverlay.classList.remove('active');
+                                
+                                setTimeout(() => {
+                                    knockOverlay.style.display = 'none';
+                                    knockOverlay.style.opacity = '1';
+
+                                    mainContainer.style.opacity = '0';
+                                    setTimeout(() => {
+                                        mainContainer.style.display = 'none';
+                                        NarrativeManager.start();
+                                    }, 500);
+
+                                }, 500);
+
+                            }, 2500);
+                        }, 1000);
+
+                    }, 400); 
+                };
                 
                 const panelToggleBtn = document.getElementById('panel-toggle-btn');
                 const infoPanel = document.querySelector('.global-info-panel');
@@ -1073,18 +1632,16 @@
                 let availableWidth = this.container.offsetWidth - 20;
                 let availableHeight = this.container.offsetHeight - binAreaHeight;
                 
-                // --- NEW LOGIC FOR MOBILE LANDSCAPE ---
                 const isMobileLandscape = window.matchMedia("(max-width: 900px) and (orientation: landscape)").matches;
                 let maxContainerSize;
 
                 if (isMobileLandscape) {
-                    this.container.style.overflowY = 'auto'; // Allow scrolling
-                    maxContainerSize = availableWidth; // Base size on width
+                    this.container.style.overflowY = 'auto';
+                    maxContainerSize = availableWidth;
                 } else {
-                    this.container.style.overflowY = 'hidden'; // No scroll on desktop
-                    maxContainerSize = Math.min(availableWidth, availableHeight); // Original square logic
+                    this.container.style.overflowY = 'hidden';
+                    maxContainerSize = Math.min(availableWidth, availableHeight);
                 }
-                // --- END NEW LOGIC ---
 
                 const gridSize = this.gs.gridSize;
                 const gap = Math.max(2, Math.floor(maxContainerSize * 0.015));
