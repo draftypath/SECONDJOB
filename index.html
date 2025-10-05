@@ -989,6 +989,21 @@
                     });
                 }
 
+                const gameMainArea = document.querySelector('.game-main-area');
+                if(gameMainArea && infoPanel) {
+                    gameMainArea.addEventListener('click', () => {
+                        if (infoPanel.classList.contains('is-open')) {
+                            infoPanel.classList.remove('is-open');
+                             setTimeout(() => {
+                                const currentGame = this.gameModules[this.currentGameIndex];
+                                if (currentGame && typeof currentGame.resizeGrid === 'function') {
+                                    currentGame.resizeGrid();
+                                }
+                            }, 300);
+                        }
+                    });
+                }
+
                 this.showBootScreen(); 
             },
             showBootScreen() { this.dom.overlay.classList.remove('console-mode'); this.dom.overlayTransitionInfo.style.display = 'none'; this.dom.overlayTransitionInfo.textContent = ''; this.dom.overlayConsoleText.style.display = 'block'; this.dom.overlay.style.display = 'flex'; this.dom.overlayTitle.textContent = "SYSTEM BOOT"; this.dom.bootSequenceDisplay.style.display = 'block'; this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayActionBtn.textContent = "INITIATE SEQUENCE"; this.dom.overlayActionBtn.style.display = 'none'; const bootMsg = `> BOOTING grdn_OS v3.2…\n> Loading Game Modules:\n> - MACRODATA_RFN.MOD ......... [LOADED]\n> - SIGNAL_SEQUENCER.MOD ...... [LOADED]\n> WELCOME, OPERATIVE.\n> OBJECTIVE: Complete 5 cycles of increasing complexity.\n> Each cycle in grdn_OS contains 3 forking paths.\n>\n> Press 'INITIATE SEQUENCE' to begin.`; this.typeMessage( this.dom.overlayConsoleText, bootMsg, () => { this.dom.overlayActionBtn.style.display = 'block' } ); },
