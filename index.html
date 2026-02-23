@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLD_DATA | Luke Carder Archive</title>
+    <title>Inscryption Archive | Project 1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
@@ -34,16 +34,16 @@
             color: var(--foreground);
         }
         
-        /* The physical laptop background */
+        /* The physical monitor background */
         .site-wrapper {
             position: absolute;
             top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-image: url('bg.png'); 
-            background-size: 100% 120%;
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
-            filter: brightness(70%) contrast(120%);
+            filter: brightness(80%) contrast(110%);
         }
         
         @media (min-aspect-ratio: 16/9) { .site-wrapper { width: 100vw; height: calc(100vw * 9 / 16); } }
@@ -65,13 +65,14 @@
             animation: crt-turn-on 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
-        /* The laptop screen content */
+        /* Adjusted coordinates to perfectly fit the new monitor cutout */
         .container { 
-            position: absolute; top: 18.0%; left: 22.5%; width: 59.8%; height: 62.5%;
+            position: absolute; 
+            top: 17.5%; left: 27%; width: 46%; height: 61%;
             background-color: var(--background); color: var(--foreground);
-            overflow-y: auto; padding: 2rem; z-index: 2;
-            border: 2px solid #1a1a1a;
-            box-shadow: inset 0 0 30px #000; 
+            overflow-y: auto; overflow-x: hidden; padding: 2rem; z-index: 2;
+            border: 1px solid #000;
+            box-shadow: inset 0 0 40px #000; 
             text-shadow: 0 0 2px rgba(209, 200, 184, 0.4); 
             transform-origin: center center;
         }
@@ -85,15 +86,15 @@
         a { color: var(--primary-accent); text-decoration: none; transition: all 0.2s ease; }
         a:hover { background-color: var(--primary-accent); color: var(--background); text-shadow: none; }
         
-        .main-header { justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
         .logo { font-size: 2rem; letter-spacing: 2px; }
-        .logo span { color: var(--blood-red); animation: flicker 2s infinite; }
-        .main-nav a { margin-left: 1.5rem; font-size: 1.2rem; cursor: pointer; border: 1px solid var(--primary-accent); padding: 4px 8px; }
+        .logo span { color: var(--blood-red); }
+        .main-nav a { margin-left: 1rem; font-size: 1.2rem; cursor: pointer; border: 1px solid var(--primary-accent); padding: 4px 8px; }
         
         .hero { display: flex; flex-direction: column; justify-content: center; text-align: center; margin: 1rem 0; position: relative; z-index: 1; min-height: 12rem; }
-        .hero h1 { font-weight: normal; margin: 0; font-size: clamp(2.5rem, 6vw, 4rem); letter-spacing: 2px; }
+        .hero h1 { font-weight: normal; margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: 2px; }
         #typing-text-main { color: var(--primary-accent); text-shadow: 0 0 8px var(--primary-accent); }
-        #typing-text-secondary { font-size: clamp(1.2rem, 3vw, 2rem); color: #888; margin-top: 0.5rem; display: block; }
+        #typing-text-secondary { font-size: clamp(1.2rem, 2.5vw, 2rem); color: #888; margin-top: 0.5rem; display: block; }
         #leshy-text { color: var(--blood-red); font-size: 1.8rem; text-shadow: 0 0 5px var(--blood-red); min-height: 2.5rem; margin-top: 1.5rem; }
         
         .system-warning { font-size: 1.2rem; color: #aaa; margin: 1.5rem 0 0 0; opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; }
@@ -105,7 +106,7 @@
         .listings-header { border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
         .job-listings-container h2 { font-size: 1.8rem; margin: 0; color: var(--foreground); }
         
-        /* DOS Directory Style Files */
+        /* Archive File Styling */
         .job-card { 
             background-color: transparent; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-accent);
             padding: 1rem 1.5rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.1s ease; position: relative; z-index: 10;
@@ -114,12 +115,11 @@
         .job-card-header { display: flex; justify-content: space-between; align-items: center; }
         .job-card .job-title { margin: 0; font-size: 1.6rem; color: var(--foreground); }
         .job-card .company-info { margin: 0; color: #888; font-size: 1.1rem; }
-        .job-posted-date { font-size: 1.1rem; color: var(--primary-accent); }
         
         /* Modals */
         .modal-overlay { 
-            position: absolute; top: 18.0%; left: 22.5%; width: 59.8%; height: 62.5%;
-            background: rgba(0,0,0,0.85); display: flex; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.2s ease; pointer-events: none; 
+            position: absolute; top: 17.5%; left: 27%; width: 46%; height: 61%;
+            background: rgba(0,0,0,0.95); display: flex; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.2s ease; pointer-events: none; 
         }
         .modal-overlay.active { opacity: 1; visibility: visible; pointer-events: all; }
         
@@ -131,25 +131,24 @@
         .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2.5rem; cursor: pointer; color: var(--primary-accent); }
         .modal-close:hover { color: var(--blood-red); text-shadow: 0 0 10px var(--blood-red); }
         
-        #modal-job-title { margin-top: 0; font-size: 2.5rem; color: var(--primary-accent); border-bottom: 2px dashed var(--border-color); padding-bottom: 1rem; }
+        #modal-job-title { margin-top: 0; font-size: 2.2rem; color: var(--primary-accent); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
         .modal-section { margin-bottom: 2rem; font-family: 'VT323', monospace; font-size: 1.3rem; line-height: 1.6; }
-        .modal-section h3 { color: #fff; font-size: 1.8rem; margin-bottom: 0.5rem; text-decoration: underline; }
+        .modal-section h3 { color: #fff; font-size: 1.6rem; margin-bottom: 0.5rem; text-decoration: underline; }
         .modal-section em { color: var(--primary-accent); font-style: normal; }
         .modal-section strong { color: var(--blood-red); font-weight: normal; }
         
         /* Camera Modal */
-        #camera-modal-content { display: flex; flex-direction: column; overflow: hidden; border-color: var(--blood-red); box-shadow: 0 0 20px rgba(139, 0, 0, 0.3); }
-        #camera-modal-content h2 { color: var(--blood-red); border-bottom: 2px dashed var(--blood-red); padding-bottom: 1rem;}
+        #camera-modal-content { display: flex; flex-direction: column; overflow: hidden; border-color: var(--primary-accent); }
+        #camera-modal-content h2 { color: var(--primary-accent); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;}
         #camera-viewfinder { flex-grow: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid #333; }
-        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(0.4) contrast(1.2); }
+        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(0.2) contrast(1.1); }
         
-        .cam-overlay-el { position: absolute; color: var(--blood-red); font-size: 1.5rem; text-shadow: 0 0 5px var(--blood-red); }
+        .cam-overlay-el { position: absolute; color: var(--primary-accent); font-size: 1.5rem; text-shadow: 0 0 5px var(--primary-accent); }
         .cam-info-hd { top: 20px; left: 20px; animation: blink 2s infinite; }
-        .cam-info-time { bottom: 20px; left: 20px; }
         
         #camera-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
-        #camera-nav button { background: transparent; border: 1px solid var(--blood-red); color: var(--blood-red); font-family: 'VT323'; font-size: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
-        #camera-nav button:hover { background-color: var(--blood-red); color: #000; }
+        #camera-nav button { background: transparent; border: 1px solid var(--primary-accent); color: var(--primary-accent); font-family: 'VT323'; font-size: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+        #camera-nav button:hover { background-color: var(--primary-accent); color: #000; }
         
         .main-footer { text-align: center; margin-top: 3rem; padding: 1rem 0; border-top: 1px solid var(--border-color); color: #555; }
     </style>
@@ -162,10 +161,11 @@
         <div class="container" id="main-container" style="display: none; opacity: 0;">
             
             <header class="main-header" id="main-header" style="display: none; opacity: 0; transition: opacity 1s;">
-                <div class="logo">OLD_DATA<span>.SYS</span></div>
+                <div class="logo">OLD_DATA</div>
                 <nav class="main-nav">
-                    <a href="https://youtube.com" target="_blank">[ACT_1_TAPE.mp4]</a>
-                    <a id="camera-btn">[VIEW_IMAGES.exe]</a>
+                    <!-- Update this href to the actual YouTube link you found -->
+                    <a href="https://youtube.com" target="_blank">[ Play Act 1 Video ]</a>
+                    <a id="camera-btn">[ View Gallery ]</a>
                 </nav>
             </header>
             
@@ -176,20 +176,20 @@
                 </h1>
                 <p id="leshy-text"></p>
                 <span class="typing-cursor" id="global-cursor"></span>
-                <p class="system-warning" id="system-warning" style="display: none;">WARNING: Corrupted nested narrative detected. Proceed with caution.</p>
+                <p class="system-warning" id="system-warning" style="display: none;">Warning: Nested narrative detected. Proceed with caution.</p>
             </section>
             
             <main id="main-content" style="display: none; opacity: 0; transition: opacity 1s;">
                 <section class="job-listings-container">
                     <div class="listings-header">
-                        <h2>C:\Luke_Carder\Wiki_Entry\</h2>
+                        <h2>Archive: Inscryption Entry</h2>
                     </div>
                     <div id="job-listings"></div>
                 </section>
             </main>
             
             <footer class="main-footer" id="main-footer" style="display: none; opacity: 0; transition: opacity 1s;">
-                <p>END OF DIRECTORY<br>Project 1 — Sean Lemiski</p>
+                <p>End of Archive<br>Project 1 — Sean Lemiski</p>
             </footer>
         </div>
         
@@ -208,18 +208,17 @@
         <div class="modal-overlay" id="camera-modal">
             <div class="modal-content" id="camera-modal-content">
                 <span class="modal-close" id="camera-modal-close">[X]</span>
-                <h2>C:\Luke_Carder\Camera_Roll\</h2>
+                <h2>Image Archive</h2>
                 <div id="camera-viewfinder">
                     <img src="" alt="Screenshot" id="camera-image-display">
                     <div id="camera-overlay">
                         <div class="cam-overlay-el cam-info-hd">REC</div>
-                        <div class="cam-overlay-el cam-info-time" id="cam-timer">00:00:00</div>
                     </div>
                 </div>
                 <p id="image-caption" style="text-align: center; margin-top: 1rem; font-size: 1.2rem; color: #aaa;"></p>
                 <div id="camera-nav">
                     <button id="prev-image-btn">&lt; PREV</button>
-                    <span id="image-counter" style="font-size: 1.5rem; color: var(--blood-red);"></span>
+                    <span id="image-counter" style="font-size: 1.5rem; color: var(--primary-accent);"></span>
                     <button id="next-image-btn">NEXT &gt;</button>
                 </div>
             </div>
@@ -254,7 +253,6 @@
                 const elSec = document.getElementById('typing-text-secondary');
                 const elLeshy = document.getElementById('leshy-text');
 
-                // Custom typewriter function that accepts variable speeds
                 function typeWriter(element, text, speed, callback, i = 0) {
                     if (i < text.length) {
                         element.innerHTML += text.charAt(i);
@@ -264,25 +262,21 @@
 
                 globalCursor.style.display = 'inline-block';
 
-                // Type main OS title
-                typeWriter(elMain, "Inscryption_OS", 50, () => {
+                typeWriter(elMain, "Inscryption Archive", 40, () => {
                     elMain.after(globalCursor); 
                     
-                    // Type secondary title
-                    typeWriter(elSec, "Project_1_Wiki_Entry.sys", 50, () => {
+                    typeWriter(elSec, "Project 1: Wiki Entry", 40, () => {
                         elSec.after(globalCursor);
                         
-                        // Small dramatic pause before Leshy speaks
+                        // Pause before Leshy speaks
                         setTimeout(() => {
                             elLeshy.appendChild(globalCursor);
-                            globalCursor.style.backgroundColor = "var(--blood-red)"; // Cursor turns red
+                            globalCursor.style.backgroundColor = "var(--blood-red)"; 
                             
-                            // Type Leshy's message slightly slower for dramatic effect
-                            typeWriter(elLeshy, "> ...another challenger. It has been years.", 80, () => {
+                            typeWriter(elLeshy, "> ...another challenger. It has been years.", 70, () => {
                                 
-                                // Final reveal
                                 setTimeout(() => {
-                                    globalCursor.style.display = 'none'; // Hide cursor
+                                    globalCursor.style.display = 'none'; 
                                     
                                     systemWarning.style.display = 'block';
                                     requestAnimationFrame(() => systemWarning.classList.add('fade-in'));
@@ -309,9 +303,8 @@
             const fileData = [
                 { 
                     id: 1, 
-                    title: "01_SYNOPSIS.txt", 
-                    company: "Basic Info & Reflection", 
-                    size: "124 KB", 
+                    title: "01: Basic Info & Synopsis", 
+                    company: "Synopsis and Auto-ethnography", 
                     sections: [
                         { h: "Synopsis", p: "<em>Inscryption</em> is a genre-bending horror mystery game that presents itself as a “nested narrative.” You play as a person who has discovered a haunted floppy disk belonging to a fictional YouTuber called Luke Carder, aka “The Lucky Carder.”<br><br>When you insert the floppy disk, you are transported to an eerie table in a dark cabin, forced to play a high-stakes card game with a shadowy character named Leshy. The game's progression loop is unique because dying feels as if it were expected. Rather than just skipping back to the previous save or starting over, the developer uses loss and death to build the narrative. When you lose a round of cards against Leshy, he turns your soul into a “Deathcard,” which carries into the next game. When you try again, the death card saves your current stats, and you essentially come back stronger than before. The game feels alive while playing, with cards like the Stoat and the Stinkbug sympathetically chatting with you, siding with you to save you from your almost inevitable demise.<br><br>Between matches, you are able to leave the table, offering an immediate sense of relief, where you can explore the cabin in a style similar to an escape room. As you explore, you come across puzzles and discover a deeper lore behind this mysterious floppy disk. The feeling I get while playing is that I am on my own, trying to survive and eventually escape. This is reflected by what theorist Ewan Kirkland describes as 'Gothic isolation,' which makes the player feel alone through physical confinement in remote, uncomfortable settings." },
                         { h: "Auto-ethnographic Reflection", p: "I discovered <em>Inscryption</em> with almost no card-game experience and was nervous that I had gotten myself into a boring, 'play by numbers' kind of game similar to the ones I would reluctantly play around a table with family as a kid. Instead, straight away, I was hit with a sense of dread and excitement, not from cheap jump scares, but from ominous, heavy, rumbling audio and a dark, thoughtful aesthetic. The game starts with the mechanical, creepy spinning noise of the floppy disk winding up, triggering what researcher Alexander Zawacki calls the 'digital uncanny,' meaning an unsettling feeling that a piece of obsolete technology is alive, or in this case, haunted. Following this, the sounds of creaking old wood and vibrating bass gave me a feeling that I was in for a thoughtfully created gaming experience. Moments into the game, you arrive at the end of a dark table, where across from you a shadowy character says, '…another challenger, it has been years,' giving me the sense that there was a deep lore to discover, and I was a new challenger in an ominous new world." },
@@ -320,37 +313,33 @@
                 },
                 { 
                     id: 2, 
-                    title: "02_ACT_1_CABIN.log", 
+                    title: "02: Act I - The Cabin", 
                     company: "Mechanics & Meta-Narrative", 
-                    size: "256 KB", 
                     sections: [
                         { h: "The Meta-Narrative: Found Footage", p: "While the game presents itself as a card game, it is framed through the lens of Luke Carder, the fictional YouTuber who found the disk. This use of Full Motion Video (FMV) sequences creates a 'found footage' aesthetic. Media theorists Jay David Bolter and Richard Grusin describe this as 'remediation,' where new media (the video game) absorbs and refashions old media (the camcorder footage and floppy disk) to achieve a sense of immediacy. By watching Luke react to the game we are playing, the boundary between player and protagonist dissolves." },
-                        { h: "Gameplay Mechanics: Act I", p: "The majority of Act I, aside from exploring the cabin, is spent sitting at a table playing the card game against Leshy. The game is a “rogue-like,” meaning that when you lose, you do go back to the beginning, but not all is lost, as you keep some of what you earned in the previous round.<br><br><strong>The Card Game:</strong> The game takes place on a 4x3 grid board, where you have 4 slots for your own active cards, and Leshy has the same. The difference is that he has an extra row where you can see which cards he will play on his next turn, giving you a chance to prepare your defense before his animals move to attack.<br><br><strong>Winning and Losing:</strong> To win, you must tip a physical brass scale on the table. Dealing damage adds to the weight (teeth) on the opponent's side. If it tips 5 points, the game ends. However, the game is rigged against you. Bosses like the Angler often 'cheat'—hooking your cards and stealing them.<br><br><strong>Power with a Cost:</strong> You cannot play your strongest cards without a cost. You must sacrifice a weaker creature you have placed on the board, giving the stronger animals the required “blood” to be played. This utilizes media theorist Ian Bogost’s concept of 'procedural rhetoric,” meaning that a game’s rules enforce its ideology. In <em>Inscryption</em>, the mechanics force you to understand that survival in the cabin requires ritualistic sacrifice." }
+                        { h: "Gameplay Mechanics", p: "The majority of Act I, aside from exploring the cabin, is spent sitting at a table playing the card game against Leshy. The game is a “rogue-like,” meaning that when you lose, you do go back to the beginning, but not all is lost, as you keep some of what you earned in the previous round.<br><br><strong>The Card Game:</strong> The game takes place on a 4x3 grid board, where you have 4 slots for your own active cards, and Leshy has the same. The difference is that he has an extra row where you can see which cards he will play on his next turn, giving you a chance to prepare your defense before his animals move to attack.<br><br><strong>Winning and Losing:</strong> To win, you must tip a physical brass scale on the table. Dealing damage adds to the weight (teeth) on the opponent's side. If it tips 5 points, the game ends. However, the game is rigged against you. Bosses like the Angler often 'cheat'—hooking your cards and stealing them.<br><br><strong>Power with a Cost:</strong> You cannot play your strongest cards without a cost. You must sacrifice a weaker creature you have placed on the board, giving the stronger animals the required “blood” to be played. This utilizes media theorist Ian Bogost’s concept of 'procedural rhetoric,” meaning that a game’s rules enforce its ideology. In <em>Inscryption</em>, the mechanics force you to understand that survival in the cabin requires ritualistic sacrifice." }
                     ]
                 },
                 { 
                     id: 3, 
-                    title: "03_ACT_2_ROM.bin", 
-                    company: "Genre Instability", 
-                    size: "512 KB", 
+                    title: "03: Act II - Genre Instability", 
+                    company: "The Haunted ROM", 
                     sections: [
-                        { h: "Genre Instability: The Haunted ROM", p: "Just as I had begun to master the dark, claustrophobic rules of Leshy’s cabin, <em>Inscryption</em> shattered my sense of stability. After finally defeating Leshy, the game rebooted. The 'New Game' button—previously broken—became clickable. Clicking it didn’t restart the horror game I had been playing; it launched an entirely different piece of software.<br><br><strong>The Visual De-evolution:</strong> Suddenly, the high-fidelity assets vanished. In their place was a silent, top-down, 8-bit pixel art RPG reminiscent of the Game Boy Color era. This transition was visually shocking. The terrifying figure of Leshy was reduced to a small, pixelated sprite. The atmospheric dread was replaced by a strange, quiet nostalgia.<br><br><strong>The Four Scrybes:</strong> In this 'Original Inscryption,' I learned that Leshy was not the sole master, but merely one of four 'Scrybes' vying for control:<br>• <strong>Grimora (The Dead):</strong> A crypt where cards are paid for with 'Bones'—the currency of death.<br>• <strong>Magnificus (Magick):</strong> A wizard whose 'Mox' mechanic requires complex deck-building.<br>• <strong>P03 (Technology):</strong> A robotic Scrybe who uses 'Energy' and 'Conduits,' foreshadowing the cold gameplay of Act III.<br><br>This shift serves a narrative purpose. By presenting the 'source code' version of the game, <em>Inscryption</em> highlights the artificiality of the medium, creating what theorist Patricia Waugh defines as 'metafiction'—fiction that self-consciously addresses its own artificiality." }
+                        { h: "Genre Instability", p: "Just as I had begun to master the dark, claustrophobic rules of Leshy’s cabin, <em>Inscryption</em> shattered my sense of stability. After finally defeating Leshy, the game rebooted. The 'New Game' button—previously broken—became clickable. Clicking it didn’t restart the horror game I had been playing; it launched an entirely different piece of software.<br><br><strong>The Visual De-evolution:</strong> Suddenly, the high-fidelity assets vanished. In their place was a silent, top-down, 8-bit pixel art RPG reminiscent of the Game Boy Color era. This transition was visually shocking. The terrifying figure of Leshy was reduced to a small, pixelated sprite. The atmospheric dread was replaced by a strange, quiet nostalgia.<br><br><strong>The Four Scrybes:</strong> In this 'Original Inscryption,' I learned that Leshy was not the sole master, but merely one of four 'Scrybes' vying for control:<br>• <strong>Grimora (The Dead):</strong> A crypt where cards are paid for with 'Bones'—the currency of death.<br>• <strong>Magnificus (Magick):</strong> A wizard whose 'Mox' mechanic requires complex deck-building.<br>• <strong>P03 (Technology):</strong> A robotic Scrybe who uses 'Energy' and 'Conduits,' foreshadowing the cold gameplay of Act III.<br><br>This shift serves a narrative purpose. By presenting the 'source code' version of the game, <em>Inscryption</em> highlights the artificiality of the medium, creating what theorist Patricia Waugh defines as 'metafiction'—fiction that self-consciously addresses its own artificiality." }
                     ]
                 },
                 { 
                     id: 4, 
-                    title: "04_ACT_3_BOTOPIA.exe", 
+                    title: "04: Act III - Botopia", 
                     company: "Industrial Alienation & Deletion", 
-                    size: "1024 KB", 
                     sections: [
-                        { h: "Gameplay Mechanics: Act III (Botopia)", p: "If Act I was a lesson in atmospheric horror, Act III is a lesson in cold, industrial alienation. After being dragged from the table by P03, the robotic 'Scrybe of Technology,' I woke up to a jarring new reality. The warm wood of the cabin was replaced by the glow of holographic screens in a factory called 'Botopia.'<br><br><strong>The Shift to Energy:</strong> The 'Blood' resource—which felt visceral in the cabin—is replaced by 'Energy' that refills like a battery. While this allows for complex strategies, it strips away the emotional weight. I no longer had to look a squirrel in the eye and sacrifice it; I just managed a power bar. This procedural change reinforces the narrative: nature has been paved over by technology.<br><br><strong>The Archivist:</strong> The most terrifying moment occurred during the boss fight with 'The Archivist.' The game opened a legitimate file browser window on my actual computer and demanded I select a file to turn into a card. The threat that my files could be deleted illustrates the 'permeable frame' of the game; <em>Inscryption</em> refuses to stay behind the glass of the monitor.<br><br><strong>The End of the Game:</strong> The finale is not a victory, but a deletion. As the 'Old_Data' is triggered, the game begins to wipe itself from existence. Watching the assets—the cards, and even Leshy himself—get scrubbed away file-by-file returns to the concept of the 'Digital Uncanny' (Zawacki). The game ends not with a 'Congratulations' screen, but with a rebooted computer, leaving me with the unsettling realization that by playing the game, I may have helped unleash the haunted software onto the web." }
+                        { h: "Gameplay Mechanics", p: "If Act I was a lesson in atmospheric horror, Act III is a lesson in cold, industrial alienation. After being dragged from the table by P03, the robotic 'Scrybe of Technology,' I woke up to a jarring new reality. The warm wood of the cabin was replaced by the glow of holographic screens in a factory called 'Botopia.'<br><br><strong>The Shift to Energy:</strong> The 'Blood' resource—which felt visceral in the cabin—is replaced by 'Energy' that refills like a battery. While this allows for complex strategies, it strips away the emotional weight. I no longer had to look a squirrel in the eye and sacrifice it; I just managed a power bar. This procedural change reinforces the narrative: nature has been paved over by technology.<br><br><strong>The Archivist:</strong> The most terrifying moment occurred during the boss fight with 'The Archivist.' The game opened a legitimate file browser window on my actual computer and demanded I select a file to turn into a card. The threat that my files could be deleted illustrates the 'permeable frame' of the game; <em>Inscryption</em> refuses to stay behind the glass of the monitor.<br><br><strong>The End of the Game:</strong> The finale is not a victory, but a deletion. As the 'Old_Data' is triggered, the game begins to wipe itself from existence. Watching the assets—the cards, and even Leshy himself—get scrubbed away file-by-file returns to the concept of the 'Digital Uncanny' (Zawacki). The game ends not with a 'Congratulations' screen, but with a rebooted computer, leaving me with the unsettling realization that by playing the game, I may have helped unleash the haunted software onto the web." }
                     ]
                 },
                 { 
                     id: 5, 
-                    title: "05_BIBLIOGRAPHY.sys", 
-                    company: "Works Cited", 
-                    size: "16 KB", 
+                    title: "05: Works Cited", 
+                    company: "Bibliography", 
                     sections: [
                         { h: "Scholarly References", p: "• Bogost, Ian. <em>Persuasive Games: The Expressive Power of Videogames</em>. MIT Press, 2007. UVic Library.<br>• Bolter, Jay David, and Richard Grusin. <em>Remediation: Understanding New Media</em>. MIT Press, 1999. UVic Library.<br>• Kirkland, Ewan. <em>Videogames and the Gothic</em>. Routledge, 2022. UVic Library.<br>• Waugh, Patricia. <em>Metafiction: The Theory and Practice of Self-Conscious Fiction</em>. Routledge, 1984. UVic Library.<br>• Zawacki, Alexander J. 'Glitches and ghosts: The digital uncanny in recent horror video games.' <em>Horror Studies</em>, vol. 15, no. 1, 2024. UVic Library." },
                         { h: "Non-Scholarly References", p: "• 'Act 2.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Act_2.<br>• 'Act III.' Inscryption Wiki, Fandom, https://inscryption.fandom.com/wiki/Act_III.<br>• 'Botopia Mechanics.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Botopia_Mechanics.<br>• 'Ending Explained.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Ending_Explained.<br>• 'Grimora, the Scrybe of the Dead.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Grimora,_the_Scrybe_of_the_Dead.<br>• 'Magnificus, the Scrybe of Magicks.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Magnificus,_the_Scrybe_of_Magicks.<br>• 'P03.' Inscryption Wiki, Fandom, https://inscryption.fandom.com/wiki/P03." }
@@ -364,7 +353,7 @@
                 const card = document.createElement('div');
                 card.className = 'job-card';
                 card.dataset.id = file.id;
-                card.innerHTML = `<div class="job-card-header"><div><h3 class="job-title">${file.title}</h3><p class="company-info">${file.company}</p></div><div class="job-posted-date">${file.size}</div></div>`;
+                card.innerHTML = `<div class="job-card-header"><div><h3 class="job-title">${file.title}</h3><p class="company-info">${file.company}</p></div></div>`;
                 jobListingsElement.appendChild(card);
             });
 
@@ -419,12 +408,6 @@
             document.getElementById('camera-modal-close').addEventListener('click', () => cameraModal.classList.remove('active'));
             document.getElementById('prev-image-btn').addEventListener('click', () => { if(currentImageIndex > 0) showImage(currentImageIndex - 1); });
             document.getElementById('next-image-btn').addEventListener('click', () => { if(currentImageIndex < archiveImages.length - 1) showImage(currentImageIndex + 1); });
-
-            // Fake Timer for Camcorder
-            setInterval(() => {
-                const d = new Date();
-                document.getElementById('cam-timer').textContent = d.toTimeString().split(' ')[0];
-            }, 1000);
 
             // Close modals on Escape key
             document.addEventListener('keydown', (e) => { 
