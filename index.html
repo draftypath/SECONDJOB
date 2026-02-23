@@ -3,420 +3,1701 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscryption Archive | Project 1</title>
+    <title>Second Job | Your Next Opportunity</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Metal+Mania&family=Bahiana&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background: #080808; 
-            --foreground: #d1c8b8; 
+            --background: #0d0d0d;
+            --foreground: #e0e0e0;
             --border-color: #333333;
-            --primary-accent: #00e5ff; 
-            --blood-red: #8b0000; 
+            --primary-accent: #00ff7f; /* Spring Green */
+            --secondary-accent: #4a4a4a;
+            --background-rgb: 13, 13, 13;
+        }
+
+        body.light-mode {
+            --background: #f5f5f5;
+            --foreground: #1a1a1a;
+            --border-color: #cccccc;
+            --primary-accent: #008040;
+            --secondary-accent: #e0e0e0;
+            --background-rgb: 245, 245, 245;
         }
 
         *, *::before, *::after { box-sizing: border-box; }
         
         html { 
             height: 100%;
-            font-size: clamp(12px, 1.2vw, 18px); 
+            font-size: clamp(9px, 1vw, 14px);
         }
 
         body {
-            font-family: 'VT323', monospace;
+            font-family: 'Roboto Mono', monospace;
             margin: 0;
-            -webkit-font-smoothing: none; 
+            -webkit-font-smoothing: antialiased;
             height: 100%;
             overflow: hidden;
             background-color: #000;
             position: relative;
-            color: var(--foreground);
         }
         
-        /* The physical monitor background */
+        body::before {
+            display: none;
+        }
+        
         .site-wrapper {
             position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background-image: url('bg.png'); 
-            background-size: 100% 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-image: url('bg.png');
+            background-size: 100% 120%;
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
             filter: brightness(80%) contrast(110%);
         }
         
-        @media (min-aspect-ratio: 16/9) { .site-wrapper { width: 100vw; height: calc(100vw * 9 / 16); } }
-        @media (max-aspect-ratio: 16/9) { .site-wrapper { height: 100vh; width: calc(100vh * 16 / 9); } }
+        @media (min-aspect-ratio: 16/9) {
+            .site-wrapper {
+                width: 100vw;
+                height: calc(100vw * 9 / 16);
+            }
+        }
+        @media (max-aspect-ratio: 16/9) {
+            .site-wrapper {
+                height: 100vh;
+                width: calc(100vh * 16 / 9);
+            }
+        }
         
-        .site-wrapper.modal-is-active .container { filter: blur(2px); }
-
-        @keyframes flicker { 0%{opacity:0.95} 50%{opacity:0.85} 100%{opacity:0.98} }
-
-        /* CRT Turn-on Animation */
-        @keyframes crt-turn-on {
-            0% { transform: scale(1, 0.005); opacity: 0; filter: brightness(10) contrast(2); background: #fff;}
-            15% { transform: scale(1, 0.005); opacity: 1; filter: brightness(5) contrast(1.5); background: #fff;}
-            40% { transform: scale(1, 1); opacity: 1; filter: brightness(2) contrast(1.2); background: var(--background); }
-            100% { transform: scale(1, 1); opacity: 1; filter: brightness(1) contrast(1); background: var(--background); }
+        .site-wrapper.modal-is-active .container {
+            overflow: hidden;
         }
 
-        .crt-turn-on {
-            animation: crt-turn-on 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        .site-wrapper::after,
+        .site-wrapper::before {
+            display: none;
         }
 
-        /* Adjusted coordinates to perfectly fit the new monitor cutout */
+        @keyframes scanline-glitch {
+            0% { top: -10%; opacity: 1; }
+            100% { top: 110%; opacity: 1; }
+        }
+
+        body.light-mode .container::after { display: none; }
+        @keyframes flicker { 0%{opacity:0.9} 20%{opacity:0.95} 40%{opacity:0.88} 60%{opacity:1} 80%{opacity:0.92} 100%{opacity:0.98} }
+
+        #glitch-overlay {
+            display: none;
+            position: absolute;
+            top: 18.0%;
+            left: 22.5%;
+            width: 59.8%;
+            height: 62.5%;
+            z-index: 500;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        #glitch-overlay.is-glitching {
+            display: block;
+            animation: glitch 1000ms cubic-bezier(.25,.46,.45,.94) both;
+        }
+
+        #glitch-overlay img {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; 
+            filter: contrast(1.5) grayscale(0.2);
+        }
+        
+        #glitch-overlay img.active { display: block; }
+        
+        @keyframes glitch {
+            0% { clip-path: inset(80% 0 5% 0); transform: translateX(-10px); }
+            10% { clip-path: inset(10% 0 75% 0); }
+            25% { clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); opacity: 1; }
+            75% { clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); opacity: 1; }
+            85% { clip-path: inset(45% 0 45% 0); transform: translateX(5px); filter: hue-rotate(45deg); }
+            100% { clip-path: inset(90% 0 5% 0); transform: translateX(-10px); }
+        }
+
         .container { 
-            position: absolute; 
-            top: 17.5%; left: 27%; width: 46%; height: 61%;
-            background-color: var(--background); color: var(--foreground);
-            overflow-y: auto; overflow-x: hidden; padding: 2rem; z-index: 2;
-            border: 1px solid #000;
-            box-shadow: inset 0 0 40px #000; 
-            text-shadow: 0 0 2px rgba(209, 200, 184, 0.4); 
-            transform-origin: center center;
+            position: absolute;
+            top: 18.0%;
+            left: 22.5%;
+            width: 59.8%;
+            height: 62.5%;
+            background-color: var(--background);
+            color: var(--foreground);
+            overflow-y: auto;
+            padding: 2rem; 
+            z-index: 2;
+            transition: background-color 0.3s ease, color 0.3s ease, opacity 0.4s ease-in-out;
         }
         
         .container::after {
-            content: ' '; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            z-index: 2; background-size: 100% 4px; pointer-events: none; animation: flicker 0.15s infinite;
+            content: ' ';
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            filter: blur(1px);
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .site-wrapper.scanline-active .container::before {
+            animation: scanline-glitch 0.4s linear;
         }
 
         a { color: var(--primary-accent); text-decoration: none; transition: all 0.2s ease; }
-        a:hover { background-color: var(--primary-accent); color: var(--background); text-shadow: none; }
+        a:hover { background-color: var(--primary-accent); color: var(--background); text-shadow: 0 0 5px var(--primary-accent); }
+        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
+        .logo { font-size: 1.5rem; font-weight: 700; }
+        .logo span { color: var(--primary-accent); }
+        .main-nav a { margin-left: 1.5rem; font-size: 1rem; }
         
-        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
-        .logo { font-size: 2rem; letter-spacing: 2px; }
-        .logo span { color: var(--blood-red); }
-        .main-nav a { margin-left: 1rem; font-size: 1.2rem; cursor: pointer; border: 1px solid var(--primary-accent); padding: 4px 8px; }
-        
-        .hero { display: flex; flex-direction: column; justify-content: center; text-align: center; margin: 1rem 0; position: relative; z-index: 1; min-height: 12rem; }
-        .hero h1 { font-weight: normal; margin: 0; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: 2px; }
-        #typing-text-main { color: var(--primary-accent); text-shadow: 0 0 8px var(--primary-accent); }
-        #typing-text-secondary { font-size: clamp(1.2rem, 2.5vw, 2rem); color: #888; margin-top: 0.5rem; display: block; }
-        #leshy-text { color: var(--blood-red); font-size: 1.8rem; text-shadow: 0 0 5px var(--blood-red); min-height: 2.5rem; margin-top: 1.5rem; }
-        
-        .system-warning { font-size: 1.2rem; color: #aaa; margin: 1.5rem 0 0 0; opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; }
-        .system-warning.fade-in { opacity: 1; transform: translateY(0); }
+        .hero { 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center; 
+            margin: 1rem 0;
+            position: relative;
+            z-index: 1;
+            min-height: 18rem;
+        }
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                transparent 0,
+                rgba(0, 0, 0, 0.4) 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+        .hero h1 { 
+            font-weight: 700; 
+            margin: 0; 
+            font-size: clamp(2rem, 9vw, 5rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        #typing-text-secondary { 
+            font-size: clamp(0.9rem, 3.5vw, 1.75rem);
+            color: #aaa; 
+            margin-top: 0.5rem; 
+        }
+        .hero p {
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            color: #aaa;
+            margin: 1.5rem 0 0 0;
+            padding: 0 1rem;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s;
+        }
+        .hero p.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        .typing-cursor { display: none; background-color: var(--primary-accent); width: 12px; height: 1.5rem; margin-left: 5px; animation: blink 1s step-end infinite; vertical-align: bottom; }
-        @keyframes blink { from, to { opacity: 0; } 50% { opacity: 1; } }
+        body.light-mode #typing-text-secondary { color: #555; }
+        .typing-cursor { display: none; background-color: var(--foreground); width: 10px; height: 1.5rem; margin-left: 8px; animation: blink 1s step-end infinite; vertical-align: middle; }
+        body.light-mode .hero p { color: #666; }
+        @keyframes blink { from, to { background-color: transparent; } 50% { background-color: var(--foreground); } }
+        .search-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1rem; background-color: rgba(var(--background-rgb), 0.5); border: 1px solid var(--border-color); padding: 1rem; margin-bottom: 3rem; }
+        .search-form .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; }
+        .search-form input { width: 100%; background: var(--background); border: 1px solid var(--border-color); color: var(--foreground); font-family: 'Roboto Mono', monospace; padding: 0.75rem; font-size: 1rem; transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease; }
+        .search-form input:focus { outline: none; border-color: var(--primary-accent); }
+        .find-jobs-btn { align-self: end; background: var(--primary-accent); color: var(--background); border: 1px solid var(--primary-accent); padding: 0.75rem 1.5rem; font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .find-jobs-btn:hover { background: transparent; color: var(--primary-accent); }
         
-        .listings-header { border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
-        .job-listings-container h2 { font-size: 1.8rem; margin: 0; color: var(--foreground); }
-        
-        /* Archive File Styling */
-        .job-card { 
-            background-color: transparent; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-accent);
-            padding: 1rem 1.5rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.1s ease; position: relative; z-index: 10;
+        .listings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
-        .job-card:hover { background-color: rgba(0, 229, 255, 0.1); border-color: var(--primary-accent); transform: translateX(5px); }
-        .job-card-header { display: flex; justify-content: space-between; align-items: center; }
-        .job-card .job-title { margin: 0; font-size: 1.6rem; color: var(--foreground); }
-        .job-card .company-info { margin: 0; color: #888; font-size: 1.1rem; }
+
+        .job-listings-container h2 { 
+            font-size: 1.5rem; 
+            margin: 0;
+        }
+
+        #job-count { color: #888; font-weight: 400; font-size: 1rem; margin-left: 10px; }
+        .job-card { background-color: transparent; border: 1px solid var(--border-color); padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .job-card:hover { background-color: rgba(var(--foreground-rgb), 0.03); border-color: var(--primary-accent); transform: translateY(-3px); }
+        body.light-mode .job-card:hover { background-color: rgba(0,0,0, 0.03); }
+        .job-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .job-card .job-title { margin: 0; font-size: 1.5rem; color: var(--primary-accent); }
+        .job-card .company-info { margin: 0.25rem 0 1rem 0; color: #aaa; }
+        body.light-mode .job-card .company-info { color: #666; }
+        .job-card .job-tags span { display: inline-block; background: var(--secondary-accent); color: #ccc; padding: 0.25rem 0.5rem; font-size: 0.8rem; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        body.light-mode .job-card .job-tags span { color: #333; }
+        .job-posted-date { font-size: 0.9rem; color: #888; text-align: right; }
+        body.light-mode .job-posted-date { color: #777; }
         
-        /* Modals */
         .modal-overlay { 
-            position: absolute; top: 17.5%; left: 27%; width: 46%; height: 61%;
-            background: rgba(0,0,0,0.95); display: flex; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.2s ease; pointer-events: none; 
+            position: absolute;
+            top: 18.0%;
+            left: 22.5%;
+            width: 59.8%;
+            height: 62.5%;
+            background: transparent; 
+            display: flex; 
+            z-index: 1000; 
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.3s ease;
+            pointer-events: none; 
         }
-        .modal-overlay.active { opacity: 1; visibility: visible; pointer-events: all; }
+        body.light-mode .modal-overlay { background: transparent; }
+        .modal-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+            pointer-events: all; 
+        }
         
         .modal-content { 
-            background: var(--background); color: var(--foreground); border: 2px solid var(--primary-accent); 
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); width: 95%; height: 95%; margin: auto; overflow-y: auto; padding: 2rem; position: relative; 
+            background: var(--background); 
+            color: var(--foreground);
+            border: 1px solid var(--border-color); 
+            width: 100%; 
+            height: 100%;
+            overflow-y: auto; 
+            padding: 2rem; 
+            position: relative; 
+            transform: scale(1);
+            transition: opacity 0.3s ease, background-color 0.3s ease; 
         }
 
-        .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2.5rem; cursor: pointer; color: var(--primary-accent); }
-        .modal-close:hover { color: var(--blood-red); text-shadow: 0 0 10px var(--blood-red); }
+        .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; cursor: pointer; color: #888; transition: color 0.2s ease; z-index: 10; }
+        .modal-close:hover { color: var(--foreground); }
+        #modal-job-title { margin-top: 0; font-size: 2rem; color: var(--primary-accent); }
+        #modal-company-info { color: #aaa; margin-bottom: 2rem; }
+        body.light-mode #modal-company-info { color: #666; }
+        .modal-section { margin-bottom: 2rem; }
+        .modal-section h3 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem; font-size: 1.2rem; }
+        .modal-section ul { padding-left: 20px; line-height: 1.8; }
+        .modal-section p { line-height: 1.8; }
+        .modal-apply-btn { display: inline-block; background: var(--primary-accent); color: var(--background); border: 1px solid var(--primary-accent); padding: 0.8rem 2rem; font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 1.1rem; text-align: center; margin-top: 1rem; width: 100%; text-decoration: none; }
+        .modal-apply-btn:hover { background: transparent; color: var(--primary-accent); }
         
-        #modal-job-title { margin-top: 0; font-size: 2.2rem; color: var(--primary-accent); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
-        .modal-section { margin-bottom: 2rem; font-family: 'VT323', monospace; font-size: 1.3rem; line-height: 1.6; }
-        .modal-section h3 { color: #fff; font-size: 1.6rem; margin-bottom: 0.5rem; text-decoration: underline; }
-        .modal-section em { color: var(--primary-accent); font-style: normal; }
-        .modal-section strong { color: var(--blood-red); font-weight: normal; }
+        #camera-modal-content { 
+            width: 100%; 
+            height: 100%;
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
+
+        #camera-modal-content h2 { color: var(--primary-accent); text-shadow: 0 0 5px var(--primary-accent); flex-shrink: 0; }
+        #camera-viewfinder { flex-grow: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; min-height: 0; }
+        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: sepia(0.2) contrast(1.1); }
+        #camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .cam-overlay-el { position: absolute; color: #fff; text-shadow: 0 0 2px #000; font-size: 1.2em; }
+        .cam-corner { width: 40px; height: 40px; position: absolute; border-color: rgba(255,255,255,0.7); }
+        .cam-corner.top-left { top: 15px; left: 15px; border-top: 2px solid; border-left: 2px solid; }
+        .cam-corner.top-right { top: 15px; right: 15px; border-top: 2px solid; border-right: 2px solid; }
+        .cam-corner.bottom-left { bottom: 15px; left: 15px; border-bottom: 2px solid; border-left: 2px solid; }
+        .cam-corner.bottom-right { bottom: 15px; right: 15px; border-bottom: 2px solid; border-right: 2px solid; }
+        .cam-reticle { top: 50%; left: 50%; width: 60px; height: 60px; transform: translate(-50%, -50%); border: 1px solid rgba(255,255,255,0.4); }
+        .cam-reticle::before, .cam-reticle::after { content: ''; position: absolute; background: rgba(255,255,255,0.4); }
+        .cam-reticle::before { top: 50%; left: 40%; right: 40%; height: 1px; transform: translateY(-50%); }
+        .cam-reticle::after { left: 50%; top: 40%; bottom: 40%; width: 1px; transform: translateX(-50%); }
+        .cam-info-hd { top: 20px; left: 65px; }
+        .cam-info-time { bottom: 20px; left: 65px; }
+        .cam-info-battery { bottom: 20px; right: 65px; }
+        #camera-nav { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+        #camera-nav button { background: transparent; border: 1px solid var(--border-color); color: var(--foreground); padding: 0.5rem 1rem; cursor: pointer; }
+        #camera-nav button:hover { background-color: var(--primary-accent); color: var(--background); }
+        #camera-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
         
-        /* Camera Modal */
-        #camera-modal-content { display: flex; flex-direction: column; overflow: hidden; border-color: var(--primary-accent); }
-        #camera-modal-content h2 { color: var(--primary-accent); border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;}
-        #camera-viewfinder { flex-grow: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid #333; }
-        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(0.2) contrast(1.1); }
+        .main-footer { text-align: center; margin-top: 5rem; padding: 2rem 0; border-top: 1px solid var(--border-color); color: var(--secondary-accent); font-size: 0.9rem; }
+        body.light-mode .main-footer { color: #999; }
         
-        .cam-overlay-el { position: absolute; color: var(--primary-accent); font-size: 1.5rem; text-shadow: 0 0 5px var(--primary-accent); }
-        .cam-info-hd { top: 20px; left: 20px; animation: blink 2s infinite; }
+        .light-mode-toggle { 
+            background-color: transparent; 
+            border: 1px solid var(--border-color); 
+            color: var(--foreground); 
+            font-family: 'Roboto Mono', monospace; 
+            padding: 0.5rem 1rem; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            transition: all 0.2s ease; 
+        }
+        .light-mode-toggle:hover { color: var(--primary-accent); border-color: var(--primary-accent); }
         
-        #camera-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
-        #camera-nav button { background: transparent; border: 1px solid var(--primary-accent); color: var(--primary-accent); font-family: 'VT323'; font-size: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
-        #camera-nav button:hover { background-color: var(--primary-accent); color: #000; }
+        @media (max-width: 40em) {
+            .main-header { flex-direction: column; gap: 1rem; }
+            .hero { margin: 1.5rem 0; min-height: 15rem; } 
+            .hero p { margin-bottom: 1.5rem; }
+            .typing-cursor { height: 1.1rem; }
+            .search-form { grid-template-columns: 1fr; }
+            .job-card-header { flex-direction: column; }
+            .job-posted-date { text-align: left; margin-top: 0.5rem; }
+            .listings-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+
+        /* --- START: ARCADE GAME STYLES --- */
+        #arcade-container {
+            position: absolute;
+            top: 18.0%;
+            left: 22.5%;
+            width: 59.8%;
+            height: 62.5%;
+            background: #0a0a0a;
+            color: var(--foreground);
+            z-index: 50;
+            font-family: 'Roboto Mono', monospace;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* MODIFIED: Add padding-left for button */
+        #game-ui { 
+            display: flex; 
+            height: 100%; 
+            width: 100%; 
+            padding: 1rem; 
+            position: relative; 
+            padding-left: 50px;
+        }
         
-        .main-footer { text-align: center; margin-top: 3rem; padding: 1rem 0; border-top: 1px solid var(--border-color); color: #555; }
+        /* MODIFIED: Make panel collapsible by default */
+        .global-info-panel {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 240px;
+            transform: translateX(-240px);
+            transition: transform 0.3s ease-in-out;
+            z-index: 10;
+            background: #0a0a0a;
+            padding: 1rem 1rem 1rem 0;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .global-info-panel.is-open {
+            transform: translateX(0);
+        }
+
+        .game-main-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            /* MODIFIED: Remove padding-left as it's now on #game-ui */
+            padding-left: 0;
+        }
+
+        .panel-content-wrapper { min-width: calc(240px - 1rem); }
+
+        #game-specific-area { flex-grow: 1; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; overflow: hidden; }
+        #game-specific-info-area { padding: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); }
+        #log-display { flex-basis: 100px; overflow-y: scroll; background: #111; border-top: 1px solid var(--border-color); padding: 5px; font-size: 0.8em; margin-top: auto; }
+        .info-box { border: 1px solid var(--border-color); padding: 10px; margin-bottom: 1rem; }
+        .info-box h3 { margin: 0 0 10px 0; color: var(--primary-accent); border-bottom: 1px solid var(--secondary-accent); padding-bottom: 5px; }
+        #exit-arcade-btn { background: transparent; border: 1px solid #777; color: #777; width: 100%; padding: 8px; font-family: 'Roboto Mono', monospace; cursor: pointer; transition: all 0.2s ease; }
+        #exit-arcade-btn:hover { border-color: #ff4136; color: #ff4136; }
+        .progress-bar-container { position: relative; width: 30px; height: 120px; border: 1px solid var(--border-color); margin-right: 10px; }
+        .progress-bar-fill { position: absolute; bottom: 0; width: 100%; background-color: var(--primary-accent); transition: height 0.3s; }
+        .progress-bar-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(90deg); color: white; mix-blend-mode: difference; font-size: 0.9em;}
+        .progress-bars { display: flex; }
+        
+        /* MODIFIED: Make button visible by default */
+        #panel-toggle-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 60px;
+            background-color: #1a1a1a;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            color: var(--primary-accent);
+            z-index: 5;
+        }
+        #panel-toggle-btn svg {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease;
+        }
+        .global-info-panel.is-open ~ #panel-toggle-btn svg {
+            transform: rotate(180deg);
+        }
+
+        #overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(10, 10, 10, 0.95); 
+            z-index: 3000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        #overlay-title { font-size: 2.5rem; margin-bottom: 1rem; color: #a7a7a7; }
+        #overlay-transition-info, #overlay-console-text { white-space: pre-wrap; line-height: 1.8; max-width: 80ch; width: 100%; }
+        #overlay-action-btn { margin-top: 2rem; background: transparent; border: 1px solid var(--primary-accent); color: var(--primary-accent); padding: 1rem 2rem; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; font-family: 'Roboto Mono', monospace; }
+        #overlay-action-btn:hover { background: var(--primary-accent); color: #000; }
+        .console-mode #overlay-console-text { text-align: left; background: #080808; padding: 1rem; border: 1px solid var(--border-color); max-width: 50rem; }
+        .blinking-cursor { animation: blink 1s step-end infinite; }
+        
+        #choice-gallery { 
+            display: flex; 
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem; 
+            margin-top: 1.5rem; 
+            width: 100%;
+            max-width: 50rem;
+        }
+        .game-card { 
+            border: 1px solid var(--border-color); 
+            padding: 1rem; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            flex: 1;
+            min-width: 18rem;
+        }
+
+        .game-card:hover { border-color: var(--primary-accent); background: #1a1a1a; }
+        .game-card img { max-width: 100%; height: auto; border-bottom: 1px solid var(--border-color); margin-bottom: 1rem; }
+        .card-title { font-size: 1.2rem; color: var(--primary-accent); }
+        .card-difficulty { color: #aaa; margin: 0.5rem 0; }
+        .card-how { font-size: 0.9rem; color: #ccc; }
+        .grid-display { display: grid; border: 1px solid var(--border-color); background: #111; gap: 5px; padding: 5px; }
+        
+        #mdr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+            height: 100%;
+            padding: 10px 0;
+        }
+        #mdr-grid { display: grid; background-color: transparent; position: relative;}
+        .mdr-cell { background-color: transparent; display: flex; align-items: center; justify-content: center; transition: transform 0.25s ease-out; user-select: none; }
+        .mdr-cell-inner {
+            color: #56c5ff;
+            text-shadow: 0 0 5px rgba(86, 197, 255, 0.7), 0 0 10px rgba(86, 197, 255, 0.5);
+            transition: color 1s ease-out, text-shadow 1s ease-out;
+        }
+        .mdr-cell.found .mdr-cell-inner { visibility: hidden; }
+        .mdr-cell-inner.was-incorrect { transition: color 0.1s, text-shadow 0.1s; color: #e7193c; text-shadow: 0 0 8px #e7193c, 0 0 15px #e7193c; }
+        .float1 { animation: float1 ease-in-out infinite; }
+        .float2 { animation: float2 ease-in-out infinite; }
+        .float3 { animation: float3 ease-in-out infinite; }
+        @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(2px, -3px); } 50% { transform: translate(-1px, 2px); } 75% { transform: translate(-2px, -2px); } }
+        @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 33% { transform: translate(-2px, -2px); } 66% { transform: translate(3px, 1px); } }
+        @keyframes float3 { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-1px, 3px); } 40% { transform: translate(2px, 2px); } 60% { transform: translate(3px, -1px); } 80% { transform: translate(-2px, -3px); } }
+        #mdr-bins {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .mdr-bin { flex: 1; height: 10px; background-color: #222; border: 1px solid var(--border-color); }
+        .mdr-bin-fill { width: 0%; height: 100%; background-color: var(--primary-accent); transition: width 0.3s ease; }
+        .mdr-instructions { padding: 2rem; text-align: center; line-height: 1.8; max-width: 500px;}
+        .sequencer-cell { background-color: #333; border-radius: 4px; cursor: pointer; transition: background-color 0.1s ease; }
+        .sequencer-cell.active { background-color: var(--primary-accent); box-shadow: 0 0 12px var(--primary-accent); }
+        .sequencer-instructions { padding: 2rem; text-align: center; line-height: 1.8; }
+        /* --- END: ARCADE GAME STYLES --- */
+
+        /* --- START: ROTATION OVERLAY STYLES --- */
+        #rotate-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            color: #fff;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .rotate-overlay-content p {
+            font-size: 1.2rem;
+            margin-top: 1.5rem;
+        }
+
+        .rotate-icon {
+            width: 5rem;
+            height: 5rem;
+            border: 2px solid #555;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate-anim 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes rotate-anim {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-90deg); }
+        }
+        
+        @media only screen and (max-width: 768px) and (orientation: portrait) {
+            #rotate-overlay {
+                display: flex;
+            }
+            .site-wrapper {
+                display: none;
+            }
+        }
+        /* --- END: ROTATION OVERLAY STYLES --- */
+
+        /* MODIFIED: Removing mobile-only rules for panel */
+        @media (max-width: 900px) and (orientation: landscape) {
+            /* Styles are now global, but we can keep overrides here if needed */
+            .global-info-panel {
+                width: 200px;
+                transform: translateX(-200px);
+            }
+            .panel-content-wrapper {
+                min-width: calc(200px - 1rem);
+            }
+        }
+        
+
+        /* --- START: HORROR SEQUENCE OVERLAYS --- */
+        #knock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: calc(var(--vh, 1vh) * 100); /* MODIFIED FOR MOBILE VIEWPORT FIX */
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #f0f0f0;
+            font-family: 'Metal Mania', cursive;
+            text-align: center;
+            cursor: default;
+            user-select: none;
+            padding: 1rem;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #knock-overlay span {
+            font-size: clamp(8rem, 25vw, 20rem);
+            line-height: 0.8;
+            text-shadow: 4px 4px 0px #1a1a1a, 8px 8px 15px rgba(0,0,0,0.5);
+            animation: knock-thump 0.5s ease-out;
+            opacity: 0;
+        }
+        #knock-overlay.active span:nth-child(1) { animation-delay: 0s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(2) { animation-delay: 0.6s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(3) { animation-delay: 1.2s; animation-fill-mode: forwards; }
+
+        @keyframes knock-thump {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        #narrative-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: calc(var(--vh, 1vh) * 100); /* MODIFIED FOR MOBILE VIEWPORT FIX */
+            background: #000;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, background-color 0.1s ease-in-out;
+        }
+        #narrative-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 1s ease-in-out;
+        }
+
+        @keyframes warp-effect {
+            0% { transform: scale(1.1) skew(0deg); filter: contrast(1.1); }
+            100% { transform: scale(1.15) skew(1deg); filter: contrast(1.2); }
+        }
+        #narrative-image.warping {
+            animation: warp-effect 0.2s linear infinite alternate;
+        }
+
+        #narrative-button-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+        .narrative-btn {
+            font-family: 'Bahiana', cursive;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: #a0a0a0;
+            background-color: rgba(0,0,0,0.2);
+            border: 2px solid #4a0101;
+            padding: 0.5rem 2rem;
+            cursor: pointer;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+            box-shadow: inset 0 0 10px #220000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        .narrative-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+        .narrative-btn:hover {
+            color: #ff4d4d;
+            border-color: #8b0000;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
+        }
+
+        /* --- START: "WOW FACTOR" DIALOG STYLES --- */
+        @keyframes pulse-border {
+            0% { border-color: rgba(204, 220, 215, 0.1); }
+            50% { border-color: rgba(204, 220, 215, 0.4); }
+            100% { border-color: rgba(204, 220, 215, 0.1); }
+        }
+        #dialog-container {
+            display: none;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 700px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+        #dialog-text-wrapper {
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 2rem;
+            border: 1px solid rgba(204, 220, 215, 0.1);
+            animation: pulse-border 4s linear infinite;
+            clip-path: polygon(0% 15%, 5% 0%, 95% 0%, 100% 15%, 100% 85%, 95% 100%, 5% 100%, 0% 85%);
+        }
+        #dialog-text {
+            font-family: 'Bahiana', cursive;
+            color: #ccddd7;
+            text-shadow: 1px 1px 5px #000;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            line-height: 1.1;
+            letter-spacing: 1px;
+            text-align: center;
+            margin: 0;
+            min-height: 1.2em; 
+        }
+        .dialog-cursor {
+            display: inline-block;
+            background-color: #ccddd7;
+            width: 5px;
+            height: 3rem;
+            margin-left: 4px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        #dialog-choices {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .dialog-choice-btn {
+            font-family: 'Bahiana', cursive;
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            background: transparent;
+            border: none;
+            color: #8a9e97;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+        .dialog-choice-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(204, 220, 215, 0.7);
+        }
+        /* --- END: NEW DIALOG STYLES --- */
+        
+        /* --- END: HORROR SEQUENCE OVERLAYS --- */
+
     </style>
 </head>
 <body>
 
-    <div class="site-wrapper">
+    <div id="rotate-overlay">
+        <div class="rotate-overlay-content">
+            <div class="rotate-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"/>
+                    <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                </svg>
+            </div>
+            <p>Please rotate your device.</p>
+        </div>
+    </div>
+
+    <div id="knock-overlay">
+        <span>KNOCK</span>
+        <span>KNOCK</span>
+        <span>KNOCK</span>
+    </div>
+
+    <div id="narrative-overlay">
+        <img src="" alt="Narrative Scene" id="narrative-image">
         
-        <!-- The Screen (Starts hidden, flickers on via JS) -->
-        <div class="container" id="main-container" style="display: none; opacity: 0;">
-            
-            <header class="main-header" id="main-header" style="display: none; opacity: 0; transition: opacity 1s;">
-                <div class="logo">OLD_DATA</div>
+        <div id="narrative-button-container">
+            <button id="narrative-btn-1" class="narrative-btn"></button>
+            <button id="narrative-btn-2" class="narrative-btn"></button>
+        </div>
+        
+        <div id="dialog-container">
+            <div id="dialog-text-wrapper">
+                <p id="dialog-text"></p>
+            </div>
+            <div id="dialog-choices"></div>
+        </div>
+    </div>
+
+    <div class="site-wrapper">
+        <div id="glitch-overlay">
+            <img src="glitch1.jpg" alt="Narrative Image: Man at computer">
+            <img src="glitch2.jpg" alt="Narrative Image: Billboard for Second Job">
+            <img src="glitch3.jpg" alt="Narrative Image: Man with declined EBT card">
+            <img src="glitch4.jpg" alt="Narrative Image: Man losing his car">
+            <img src="glitch5.jpg" alt="Narrative Image: Close-up of a security camera">
+            <img src="glitch6.jpg" alt="Narrative Image: Zoomed-in eye on a screen">
+            <img src="glitch7.jpg" alt="Narrative Image: A lonely figure in a desolate city">
+            <img src="glitch8.jpg" alt="Narrative Image: Figure looking at a glowing terminal">
+            <img src="glitch9.jpg" alt="Narrative Image: Terminal displaying 'ACCESS DENIED'">
+            <img src="glitch10.jpg" alt="Narrative Image: A corporate logo flickering">
+            <img src="glitch11.jpg" alt="Narrative Image: A hand reaching for a glitching screen">
+            <img src="glitch12.jpg" alt="Narrative Image: The Second Job logo, heavily distorted">
+            <img src="55.png" alt="Narrative Image: A stark, isolated number 55">
+            <img src="56.png" alt="Narrative Image: A second stark number, 56">
+        </div>
+        <div class="container">
+            <header class="main-header">
+                <div class="logo">Second<span>Job</span></div>
                 <nav class="main-nav">
-                    <!-- Update this href to the actual YouTube link you found -->
-                    <a href="https://youtube.com" target="_blank">[ Play Act 1 Video ]</a>
-                    <a id="camera-btn">[ View Gallery ]</a>
+                    <a href="https://dexscreener.com/solana/YOUR_TOKEN_ADDRESS" target="_blank">[ Chart ]</a>
+                    <a href="https://t.me/YOUR_TELEGRAM_GROUP" target="_blank">[ Telegram ]</a>
+                    <a href="https://twitter.com/YOUR_TWITTER_HANDLE" target="_blank">[ Twitter ]</a>
+                    <a href="#" id="camera-btn">[ Camera ]</a>
                 </nav>
             </header>
-            
             <section class="hero">
                 <h1>
                     <span id="typing-text-main"></span>
-                    <span id="typing-text-secondary"></span>
+                    <span id="typing-text-secondary">
+                        <span class="typing-cursor"></span>
+                    </span>
                 </h1>
-                <p id="leshy-text"></p>
-                <span class="typing-cursor" id="global-cursor"></span>
-                <p class="system-warning" id="system-warning" style="display: none;">Warning: Nested narrative detected. Proceed with caution.</p>
+                <p>// Redefining the future of income, one block at a time. Your new career starts here.</p>
             </section>
-            
-            <main id="main-content" style="display: none; opacity: 0; transition: opacity 1s;">
+            <main>
+                <div class="search-form">
+                    <div class="input-group">
+                        <label for="what-input">>> what</label>
+                        <input type="text" id="what-input" placeholder="e.g. 'hodler', 'shill', 'analyst'">
+                    </div>
+                    <div class="input-group">
+                        <label for="where-input">>> where</label>
+                        <input type="text" id="where-input" placeholder="e.g. 'remote', 'the moon'">
+                    </div>
+                    <a href="https://dexscreener.com/solana/YOUR_TOKEN_ADDRESS" target="_blank" class="find-jobs-btn">Find Jobs</a>
+                </div>
                 <section class="job-listings-container">
                     <div class="listings-header">
-                        <h2>Archive: Inscryption Entry</h2>
+                        <h2>Open Positions <span id="job-count"></span></h2>
+                        <button class="light-mode-toggle" id="light-mode-toggle-btn">Classic Light Mode</button>
                     </div>
                     <div id="job-listings"></div>
                 </section>
             </main>
-            
-            <footer class="main-footer" id="main-footer" style="display: none; opacity: 0; transition: opacity 1s;">
-                <p>End of Archive<br>Project 1 — Sean Lemiski</p>
+            <footer class="main-footer">
+                <p>Second Job is a satiric digital platform for entertainment purposes only. It is not a real job board. <br>
+                $SECONDJOB is a memecoin with no intrinsic value. All investments carry risk. Do your own research.</p>
             </footer>
         </div>
         
-        <!-- ESSAY MODAL -->
         <div class="modal-overlay" id="job-modal">
             <div class="modal-content">
-                <span class="modal-close" id="modal-close-btn">[X]</span>
+                <span class="modal-close" id="modal-close-btn">&times;</span>
                 <div id="modal-body">
                     <h1 id="modal-job-title"></h1>
-                    <div id="modal-dynamic-content"></div>
+                    <p id="modal-company-info"></p>
+                    <div class="modal-section" id="modal-tags"></div>
+                    <div class="modal-section"><h3>// Full Job Description</h3><p id="modal-description"></p></div>
+                    <div class="modal-section"><h3>// Key Responsibilities</h3><ul id="modal-responsibilities"></ul></div>
+                    <div class="modal-section"><h3>// Qualifications</h3><ul id="modal-qualifications"></ul></div>
+                    <a id="modal-apply-link" href="#" target="_blank" class="modal-apply-btn">Apply For This Position</a>
                 </div>
             </div>
         </div>
         
-        <!-- IMAGE VIEWER MODAL -->
         <div class="modal-overlay" id="camera-modal">
             <div class="modal-content" id="camera-modal-content">
-                <span class="modal-close" id="camera-modal-close">[X]</span>
-                <h2>Image Archive</h2>
+                <span class="modal-close" id="camera-modal-close">&times;</span>
+                <h2>// SURVEILLANCE_ARCHIVE: Subject 81</h2>
                 <div id="camera-viewfinder">
-                    <img src="" alt="Screenshot" id="camera-image-display">
+                    <img src="" alt="Surveillance Footage" id="camera-image-display">
                     <div id="camera-overlay">
-                        <div class="cam-overlay-el cam-info-hd">REC</div>
+                        <div class="cam-overlay-el cam-corner top-left"></div>
+                        <div class="cam-overlay-el cam-corner top-right"></div>
+                        <div class="cam-overlay-el cam-corner bottom-left"></div>
+                        <div class="cam-overlay-el cam-corner bottom-right"></div>
+                        <div class="cam-overlay-el cam-reticle"></div>
+                        <div class="cam-overlay-el cam-info-hd">HD</div>
+                        <div class="cam-overlay-el cam-info-time">00:00:00</div>
+                        <div class="cam-overlay-el cam-info-battery">
+                            <svg width="32" height="16" viewbox="0 0 32 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M29 2H2V14H29V12H30V4H29V2Z" stroke="white" stroke-width="2"/>
+                                <path d="M5 5V11H25V5H5Z" fill="white"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
-                <p id="image-caption" style="text-align: center; margin-top: 1rem; font-size: 1.2rem; color: #aaa;"></p>
                 <div id="camera-nav">
-                    <button id="prev-image-btn">&lt; PREV</button>
-                    <span id="image-counter" style="font-size: 1.5rem; color: var(--primary-accent);"></span>
-                    <button id="next-image-btn">NEXT &gt;</button>
+                    <button id="prev-image-btn">&lt;&lt; PREV_FILE</button>
+                    <span id="image-counter"></span>
+                    <button id="next-image-btn">NEXT_FILE &gt;&gt;</button>
                 </div>
             </div>
         </div>
 
+        <div id="arcade-container" style="display: none;">
+            <div id="overlay">
+                <h2 id="overlay-title">SYSTEM BOOT</h2>
+                <div id="boot-sequence-display"></div>
+                <div id="overlay-console-text"></div>
+                <div id="overlay-transition-info"></div>
+                <div id="choice-gallery"></div>
+                <button id="overlay-action-btn">INITIATE</button>
+            </div>
+            <div id="game-ui">
+                <button id="panel-toggle-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </button>
+                <div class="global-info-panel">
+                    <div class="panel-content-wrapper">
+                        <div class="info-box">
+                            <h3>// SESSION_CONTROL</h3>
+                            <button id="exit-arcade-btn">[ Return to Main Page ]</button>
+                        </div>
+                        <div class="info-box">
+                            <h3>// GLOBAL_STATS</h3>
+                            <p>Cycle: <span id="cycle-display">1</span></p>
+                            <p>Total Score: <span id="total-score-display">0</span></p>
+                            <p>Current Game: <span id="current-game-display">--</span></p>
+                        </div>
+                         <div class="info-box">
+                            <h3>// PROGRESS</h3>
+                            <div class="progress-bars">
+                                <div class="progress-bar-container">
+                                    <div id="cycle-fill" class="progress-bar-fill"></div>
+                                    <div id="cycle-label" class="progress-bar-label">CYCLE</div>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div id="wave-fill" class="progress-bar-fill"></div>
+                                    <div id="wave-label" class="progress-bar-label">WAVE</div>
+                                </div>
+                            </div>
+                        </div>
+                        <textarea id="log-display" readonly rows="10" style="width: 100%; background: #111; color: #ccc; border: 1px solid var(--border-color); font-size: 0.8em;"></textarea>
+                    </div>
+                </div>
+                <div class="game-main-area">
+                    <div id="game-specific-area"></div>
+                    <div id="game-specific-info-area"></div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            const mainContainer = document.getElementById('main-container');
-            const mainHeader = document.getElementById('main-header');
-            const mainContent = document.getElementById('main-content');
-            const mainFooter = document.getElementById('main-footer');
-            const systemWarning = document.getElementById('system-warning');
-            const globalCursor = document.getElementById('global-cursor');
+            const siteWrapper = document.querySelector('.site-wrapper');
+            const glitchOverlay = document.getElementById('glitch-overlay');
+            const allGlitchImages = Array.from(glitchOverlay.querySelectorAll('img'));
+            let glitchInterval; 
+            let currentPairIndex = 0;
+            let glitchLoopInterval; 
 
-            // --- BOOT SEQUENCE LOGIC ---
-            // 1. Wait 1 second, then flicker the screen on
-            setTimeout(() => {
-                mainContainer.style.display = 'block';
-                mainContainer.classList.add('crt-turn-on');
-                
-                // 2. Wait for flicker to finish, then start typing
-                setTimeout(() => {
-                    startBootSequence();
-                }, 800); 
-            }, 1000);
-
-            function startBootSequence() {
-                const elMain = document.getElementById('typing-text-main');
-                const elSec = document.getElementById('typing-text-secondary');
-                const elLeshy = document.getElementById('leshy-text');
-
-                function typeWriter(element, text, speed, callback, i = 0) {
-                    if (i < text.length) {
-                        element.innerHTML += text.charAt(i);
-                        setTimeout(() => typeWriter(element, text, speed, callback, i + 1), speed);
-                    } else if (callback) callback();
-                }
-
-                globalCursor.style.display = 'inline-block';
-
-                typeWriter(elMain, "Inscryption Archive", 40, () => {
-                    elMain.after(globalCursor); 
-                    
-                    typeWriter(elSec, "Project 1: Wiki Entry", 40, () => {
-                        elSec.after(globalCursor);
-                        
-                        // Pause before Leshy speaks
-                        setTimeout(() => {
-                            elLeshy.appendChild(globalCursor);
-                            globalCursor.style.backgroundColor = "var(--blood-red)"; 
-                            
-                            typeWriter(elLeshy, "> ...another challenger. It has been years.", 70, () => {
-                                
-                                setTimeout(() => {
-                                    globalCursor.style.display = 'none'; 
-                                    
-                                    systemWarning.style.display = 'block';
-                                    requestAnimationFrame(() => systemWarning.classList.add('fade-in'));
-                                    
-                                    // Reveal UI
-                                    mainHeader.style.display = 'flex';
-                                    mainContent.style.display = 'block';
-                                    mainFooter.style.display = 'block';
-                                    
-                                    requestAnimationFrame(() => {
-                                        mainHeader.style.opacity = 1;
-                                        mainContent.style.opacity = 1;
-                                        mainFooter.style.opacity = 1;
-                                    });
-                                }, 1000);
-
-                            });
-                        }, 800);
-                    });
-                });
-            }
-
-            // --- ESSAY DATA (THE FILES) ---
-            const fileData = [
-                { 
-                    id: 1, 
-                    title: "01: Basic Info & Synopsis", 
-                    company: "Synopsis and Auto-ethnography", 
-                    sections: [
-                        { h: "Synopsis", p: "<em>Inscryption</em> is a genre-bending horror mystery game that presents itself as a “nested narrative.” You play as a person who has discovered a haunted floppy disk belonging to a fictional YouTuber called Luke Carder, aka “The Lucky Carder.”<br><br>When you insert the floppy disk, you are transported to an eerie table in a dark cabin, forced to play a high-stakes card game with a shadowy character named Leshy. The game's progression loop is unique because dying feels as if it were expected. Rather than just skipping back to the previous save or starting over, the developer uses loss and death to build the narrative. When you lose a round of cards against Leshy, he turns your soul into a “Deathcard,” which carries into the next game. When you try again, the death card saves your current stats, and you essentially come back stronger than before. The game feels alive while playing, with cards like the Stoat and the Stinkbug sympathetically chatting with you, siding with you to save you from your almost inevitable demise.<br><br>Between matches, you are able to leave the table, offering an immediate sense of relief, where you can explore the cabin in a style similar to an escape room. As you explore, you come across puzzles and discover a deeper lore behind this mysterious floppy disk. The feeling I get while playing is that I am on my own, trying to survive and eventually escape. This is reflected by what theorist Ewan Kirkland describes as 'Gothic isolation,' which makes the player feel alone through physical confinement in remote, uncomfortable settings." },
-                        { h: "Auto-ethnographic Reflection", p: "I discovered <em>Inscryption</em> with almost no card-game experience and was nervous that I had gotten myself into a boring, 'play by numbers' kind of game similar to the ones I would reluctantly play around a table with family as a kid. Instead, straight away, I was hit with a sense of dread and excitement, not from cheap jump scares, but from ominous, heavy, rumbling audio and a dark, thoughtful aesthetic. The game starts with the mechanical, creepy spinning noise of the floppy disk winding up, triggering what researcher Alexander Zawacki calls the 'digital uncanny,' meaning an unsettling feeling that a piece of obsolete technology is alive, or in this case, haunted. Following this, the sounds of creaking old wood and vibrating bass gave me a feeling that I was in for a thoughtfully created gaming experience. Moments into the game, you arrive at the end of a dark table, where across from you a shadowy character says, '…another challenger, it has been years,' giving me the sense that there was a deep lore to discover, and I was a new challenger in an ominous new world." },
-                        { h: "Artistic Analysis", p: "Developer Daniel Mullins uses a design theory he calls the 'Big Butt Principle,' where he takes a safe genre (like a card game) and adds dark, jarring twists. In an interview, Mullins describes himself as a 'digital interior designer'; he doesn’t build the 3D models himself but utilizes high-fidelity assets from artist David Hogoman. He creates a unique atmosphere by editing these objects to have a low-resolution, unsettling, heavy-contrast look. This combination makes the game look like a 'cursed' vintage game. This art style, which Mullins describes as 'aiming for the woe'—meaning pushing for a sense of unease—forced my imagination to fill in the blanks, often with unsettling thoughts." }
-                    ]
-                },
-                { 
-                    id: 2, 
-                    title: "02: Act I - The Cabin", 
-                    company: "Mechanics & Meta-Narrative", 
-                    sections: [
-                        { h: "The Meta-Narrative: Found Footage", p: "While the game presents itself as a card game, it is framed through the lens of Luke Carder, the fictional YouTuber who found the disk. This use of Full Motion Video (FMV) sequences creates a 'found footage' aesthetic. Media theorists Jay David Bolter and Richard Grusin describe this as 'remediation,' where new media (the video game) absorbs and refashions old media (the camcorder footage and floppy disk) to achieve a sense of immediacy. By watching Luke react to the game we are playing, the boundary between player and protagonist dissolves." },
-                        { h: "Gameplay Mechanics", p: "The majority of Act I, aside from exploring the cabin, is spent sitting at a table playing the card game against Leshy. The game is a “rogue-like,” meaning that when you lose, you do go back to the beginning, but not all is lost, as you keep some of what you earned in the previous round.<br><br><strong>The Card Game:</strong> The game takes place on a 4x3 grid board, where you have 4 slots for your own active cards, and Leshy has the same. The difference is that he has an extra row where you can see which cards he will play on his next turn, giving you a chance to prepare your defense before his animals move to attack.<br><br><strong>Winning and Losing:</strong> To win, you must tip a physical brass scale on the table. Dealing damage adds to the weight (teeth) on the opponent's side. If it tips 5 points, the game ends. However, the game is rigged against you. Bosses like the Angler often 'cheat'—hooking your cards and stealing them.<br><br><strong>Power with a Cost:</strong> You cannot play your strongest cards without a cost. You must sacrifice a weaker creature you have placed on the board, giving the stronger animals the required “blood” to be played. This utilizes media theorist Ian Bogost’s concept of 'procedural rhetoric,” meaning that a game’s rules enforce its ideology. In <em>Inscryption</em>, the mechanics force you to understand that survival in the cabin requires ritualistic sacrifice." }
-                    ]
-                },
-                { 
-                    id: 3, 
-                    title: "03: Act II - Genre Instability", 
-                    company: "The Haunted ROM", 
-                    sections: [
-                        { h: "Genre Instability", p: "Just as I had begun to master the dark, claustrophobic rules of Leshy’s cabin, <em>Inscryption</em> shattered my sense of stability. After finally defeating Leshy, the game rebooted. The 'New Game' button—previously broken—became clickable. Clicking it didn’t restart the horror game I had been playing; it launched an entirely different piece of software.<br><br><strong>The Visual De-evolution:</strong> Suddenly, the high-fidelity assets vanished. In their place was a silent, top-down, 8-bit pixel art RPG reminiscent of the Game Boy Color era. This transition was visually shocking. The terrifying figure of Leshy was reduced to a small, pixelated sprite. The atmospheric dread was replaced by a strange, quiet nostalgia.<br><br><strong>The Four Scrybes:</strong> In this 'Original Inscryption,' I learned that Leshy was not the sole master, but merely one of four 'Scrybes' vying for control:<br>• <strong>Grimora (The Dead):</strong> A crypt where cards are paid for with 'Bones'—the currency of death.<br>• <strong>Magnificus (Magick):</strong> A wizard whose 'Mox' mechanic requires complex deck-building.<br>• <strong>P03 (Technology):</strong> A robotic Scrybe who uses 'Energy' and 'Conduits,' foreshadowing the cold gameplay of Act III.<br><br>This shift serves a narrative purpose. By presenting the 'source code' version of the game, <em>Inscryption</em> highlights the artificiality of the medium, creating what theorist Patricia Waugh defines as 'metafiction'—fiction that self-consciously addresses its own artificiality." }
-                    ]
-                },
-                { 
-                    id: 4, 
-                    title: "04: Act III - Botopia", 
-                    company: "Industrial Alienation & Deletion", 
-                    sections: [
-                        { h: "Gameplay Mechanics", p: "If Act I was a lesson in atmospheric horror, Act III is a lesson in cold, industrial alienation. After being dragged from the table by P03, the robotic 'Scrybe of Technology,' I woke up to a jarring new reality. The warm wood of the cabin was replaced by the glow of holographic screens in a factory called 'Botopia.'<br><br><strong>The Shift to Energy:</strong> The 'Blood' resource—which felt visceral in the cabin—is replaced by 'Energy' that refills like a battery. While this allows for complex strategies, it strips away the emotional weight. I no longer had to look a squirrel in the eye and sacrifice it; I just managed a power bar. This procedural change reinforces the narrative: nature has been paved over by technology.<br><br><strong>The Archivist:</strong> The most terrifying moment occurred during the boss fight with 'The Archivist.' The game opened a legitimate file browser window on my actual computer and demanded I select a file to turn into a card. The threat that my files could be deleted illustrates the 'permeable frame' of the game; <em>Inscryption</em> refuses to stay behind the glass of the monitor.<br><br><strong>The End of the Game:</strong> The finale is not a victory, but a deletion. As the 'Old_Data' is triggered, the game begins to wipe itself from existence. Watching the assets—the cards, and even Leshy himself—get scrubbed away file-by-file returns to the concept of the 'Digital Uncanny' (Zawacki). The game ends not with a 'Congratulations' screen, but with a rebooted computer, leaving me with the unsettling realization that by playing the game, I may have helped unleash the haunted software onto the web." }
-                    ]
-                },
-                { 
-                    id: 5, 
-                    title: "05: Works Cited", 
-                    company: "Bibliography", 
-                    sections: [
-                        { h: "Scholarly References", p: "• Bogost, Ian. <em>Persuasive Games: The Expressive Power of Videogames</em>. MIT Press, 2007. UVic Library.<br>• Bolter, Jay David, and Richard Grusin. <em>Remediation: Understanding New Media</em>. MIT Press, 1999. UVic Library.<br>• Kirkland, Ewan. <em>Videogames and the Gothic</em>. Routledge, 2022. UVic Library.<br>• Waugh, Patricia. <em>Metafiction: The Theory and Practice of Self-Conscious Fiction</em>. Routledge, 1984. UVic Library.<br>• Zawacki, Alexander J. 'Glitches and ghosts: The digital uncanny in recent horror video games.' <em>Horror Studies</em>, vol. 15, no. 1, 2024. UVic Library." },
-                        { h: "Non-Scholarly References", p: "• 'Act 2.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Act_2.<br>• 'Act III.' Inscryption Wiki, Fandom, https://inscryption.fandom.com/wiki/Act_III.<br>• 'Botopia Mechanics.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Botopia_Mechanics.<br>• 'Ending Explained.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Ending_Explained.<br>• 'Grimora, the Scrybe of the Dead.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Grimora,_the_Scrybe_of_the_Dead.<br>• 'Magnificus, the Scrybe of Magicks.' IGN Wiki Guide, IGN, https://www.ign.com/wikis/inscryption/Magnificus,_the_Scrybe_of_Magicks.<br>• 'P03.' Inscryption Wiki, Fandom, https://inscryption.fandom.com/wiki/P03." }
-                    ]
-                }
+            const glitchPairs = [
+                ['glitch1.jpg', 'glitch2.jpg'],
+                ['glitch3.jpg', 'glitch4.jpg'],
+                ['55.png', '56.png'],
+                ['glitch7.jpg', 'glitch8.jpg', 'glitch9.jpg'],
+                ['glitch5.jpg', 'glitch6.jpg'],
+                ['glitch10.jpg', 'glitch11.jpg', 'glitch12.jpg']
             ];
 
-            const jobListingsElement = document.getElementById('job-listings');
+            const surveillanceImages = [
+                'glitch1.jpg', 'glitch3.jpg', 'glitch6.jpg', 'glitch7.jpg', 
+                'glitch9.jpg', 'glitch10.jpg', 'glitch12.jpg', 'glitch14.jpg'
+            ];
+
+            function triggerGlitch(imagePair) {
+                clearInterval(glitchInterval);
+
+                const imagesToSwitch = imagePair.map(src => 
+                    allGlitchImages.find(img => img.src.includes(src))
+                ).filter(Boolean); 
+
+                if (imagesToSwitch.length === 0) return;
+
+                glitchOverlay.classList.add('is-glitching');
+                
+                let activeImageIndex = 0;
+                glitchInterval = setInterval(() => {
+                    allGlitchImages.forEach(img => img.classList.remove('active'));
+                    imagesToSwitch[activeImageIndex].classList.add('active');
+                    activeImageIndex = (activeImageIndex + 1) % imagesToSwitch.length;
+                }, 100); 
+
+                setTimeout(() => {
+                    glitchOverlay.classList.remove('is-glitching');
+                    clearInterval(glitchInterval);
+                }, 1000);
+            }
+
+            function startGlitchLoop() {
+                // Clear any existing loop to prevent duplicates
+                clearInterval(glitchLoopInterval);
+                glitchLoopInterval = setInterval(() => {
+                    triggerGlitch(glitchPairs[currentPairIndex]);
+                    currentPairIndex = (currentPairIndex + 1) % glitchPairs.length;
+                }, 12000);
+            }
+
+            function stopGlitchLoop() {
+                clearInterval(glitchLoopInterval);
+                glitchOverlay.style.display = 'none'; // Explicitly hide it
+            }
+
+            setTimeout(() => {
+                triggerGlitch(glitchPairs[currentPairIndex]);
+                currentPairIndex = (currentPairIndex + 1) % glitchPairs.length;
+                startGlitchLoop();
+            }, 6000);
+
+            setInterval(() => {
+                siteWrapper.classList.add('scanline-active');
+                setTimeout(() => {
+                    siteWrapper.classList.remove('scanline-active');
+                }, 400);
+            }, 13000);
             
-            fileData.forEach(file => {
-                const card = document.createElement('div');
-                card.className = 'job-card';
-                card.dataset.id = file.id;
-                card.innerHTML = `<div class="job-card-header"><div><h3 class="job-title">${file.title}</h3><p class="company-info">${file.company}</p></div></div>`;
-                jobListingsElement.appendChild(card);
+            const jobData = [
+                { id: 1, title: ".................", company: "Solana Capital", location: "Remote (Global)", posted: "3 minutes ago", tags: ["Executive", "Full-Time", "High-Risk"], description: "As the Chief Executive Hodler, you will be responsible for maintaining an unwavering grip on our digital asset portfolio through extreme market volatility. This is a leadership role requiring unparalleled conviction and a zen-like emotional state.", responsibilities: ["Maintaining composure during 90% drawdowns.", "Authoritatively dismissing FUD on all social platforms.", "Executing strategic 'buy the dip' orders with precision.", "Crafting long-form Twitter threads on the long-term vision."], qualifications: ["Minimum 2 cycles of crypto market experience.", "Demonstrably diamond hands (certification preferred).", "Proven ability to ignore all forms of market analysis.", "Expertise in crafting 'WAGMI' and 'This is fine' memes."] },
+                { id: 2, title: "........ .. .......", company: "Meme Ventures", location: "The Internet", posted: "1 hour ago", tags: ["Marketing", "Remote", "Performance-Based"], description: "We are seeking a highly motivated Shill Specialist to organically integrate our project's narrative across various online communities. Your mission is to generate authentic, grassroots hype without appearing inauthentic.", responsibilities: ["Subtly mentioning the project in unrelated conversations.", "Engaging with influencer posts to maximize visibility.", "Creating and disseminating high-quality, viral memes.", "Monitoring community sentiment and reporting key metrics."], qualifications: ["Active user on X, Telegram, and Reddit.", "A portfolio of successful, low-engagement shilling campaigns.", "Complete lack of shame.", "Ability to type 'LFG' with genuine enthusiasm."] },
+                { id: 3, title: "................. ....", company: "Project Moonshot", location: "Remote", posted: "8 hours ago", tags: ["Security", "Analyst", "Full-Time"], description: "In this critical role, you will be the first line of defense against market FUD (Fear, Uncertainty, and Doubt). Your job is to analyze, categorize, and neutralize negative sentiment before it can impact the community's morale.", responsibilities: ["Proactively identifying sources of potential FUD.", "Developing data-driven counter-narratives.", "Engaging with concerned community members with calming, reassuring messages.", "Maintaining the official 'Reasons We're Bullish' documentation."], qualifications: ["PhD in Copium Studies or equivalent experience.", "Expert-level understanding of logical fallacies.", "Ability to remain stoic in the face of overwhelming evidence.", "Access to a high-quality .gif library."] },
+                { id: 4, title: "........... .....", company: "Diamond Hands LLC", location: "Your Mom's Basement", posted: "1 day ago", tags: ["Entry-Level", "Finance", "High-Growth"], description: "An exciting entry-level opportunity for an aspiring market participant. The Junior Dip Buyer will learn to identify and act on market downturns, contributing to the fund's long-term position. This is a fast-paced role with significant upward mobility.", responsibilities: ["Monitoring charts for 20+ hours a day.", "Executing buy orders when your gut tells you to.", "Suffering immense psychological pressure.", "Providing liquidity at the least logical moments."], qualifications: ["Access to a functional keyboard and mouse.", "More money than sense (preferred, but not required).", "An almost supernatural ability to buy at a temporary peak.", "Resilience and a short-term memory."] },
+                { id: 99, title: "................. [ACTIVATE]", company: "grdn_OS", location: "SYSTEM_ROOT", posted: "now", tags: ["Internal", "Diagnostics", "Gamified"], description: "Run system diagnostics.", responsibilities: ["Execute diagnostic sub-routines.", "Monitor system stability.", "Report anomalies."], qualifications: ["Level 3 Clearance.", "Authorized Personnel Only."] }
+            ];
+            const buyLink = "https://dexscreener.com/solana/YOUR_TOKEN_ADDRESS";
+            const mainTypingElement = document.getElementById('typing-text-main');
+            const secondaryTypingElement = document.getElementById('typing-text-secondary');
+            const mainText = "Your Next Opportunity.";
+            const secondaryText = "A Second Job Awaits.";
+            const typingSpeed = 100;
+            const cursorElement = document.querySelector('.typing-cursor');
+            const heroTagline = document.querySelector('.hero p');
+
+            function typeWriter(element, text, callback) {
+                let i = 0;
+                const cursor = element.querySelector('.typing-cursor');
+                function type() {
+                    if (i < text.length) {
+                        const textNode = document.createTextNode(text.charAt(i));
+                        if (cursor) { element.insertBefore(textNode, cursor); } else { element.appendChild(textNode); }
+                        i++;
+                        setTimeout(type, typingSpeed);
+                    } else if (callback) { callback(); }
+                }
+                type();
+            }
+
+            typeWriter(mainTypingElement, mainText, () => {
+                typeWriter(secondaryTypingElement, secondaryText, () => {
+                    cursorElement.style.display = 'inline-block';
+                    heroTagline.classList.add('fade-in'); 
+                });
             });
 
-            // --- ESSAY MODAL LOGIC ---
+            const jobListingsElement = document.getElementById('job-listings');
+            const whatInput = document.getElementById('what-input');
+            const whereInput = document.getElementById('where-input');
+            const jobCountElement = document.getElementById('job-count');
+            const renderJobs = (jobs) => {
+                jobListingsElement.innerHTML = '';
+                jobCountElement.textContent = `(${jobs.length} found)`;
+                if (jobs.length === 0) { jobListingsElement.innerHTML = '<p style="color: #888;">// No matching positions found. Broaden your search or check back later.</p>'; }
+                jobs.forEach(job => {
+                    const card = document.createElement('div');
+                    card.className = 'job-card';
+                    card.dataset.jobId = job.id;
+                    let tagsHtml = job.tags.map(tag => `<span>${tag}</span>`).join('');
+                    card.innerHTML = `<div class="job-card-header"><div><h3 class="job-title">${job.title}</h3><p class="company-info">${job.company} &bull; ${job.location}</p></div><div class="job-posted-date">${job.posted}</div></div><div class="job-tags">${tagsHtml}</div>`;
+                    jobListingsElement.appendChild(card);
+                });
+            };
+            const filterJobs = () => {
+                const whatQuery = whatInput.value.toLowerCase();
+                const whereQuery = whereInput.value.toLowerCase();
+                const filteredJobs = jobData.filter(job => {
+                    const searchPool = `${job.title} ${job.company} ${job.tags.join(' ')}`.toLowerCase();
+                    return searchPool.includes(whatQuery) && job.location.toLowerCase().includes(whereQuery);
+                });
+                renderJobs(filteredJobs);
+            };
+            whatInput.addEventListener('input', filterJobs);
+            whereInput.addEventListener('input', filterJobs);
+            renderJobs(jobData);
+            
             const jobModal = document.getElementById('job-modal');
             const jobModalCloseBtn = document.getElementById('modal-close-btn');
+
+            const openJobModal = (jobId) => {
+                const job = jobData.find(j => j.id == jobId);
+                if (!job) return;
+                stopGlitchLoop();
+                document.getElementById('modal-job-title').textContent = job.title;
+                document.getElementById('modal-company-info').textContent = `${job.company} • ${job.location}`;
+                document.getElementById('modal-description').textContent = job.description;
+                document.getElementById('modal-responsibilities').innerHTML = job.responsibilities.map(item => `<li>${item}</li>`).join('');
+                document.getElementById('modal-qualifications').innerHTML = job.qualifications.map(item => `<li>${item}</li>`).join('');
+                document.getElementById('modal-tags').innerHTML = job.tags.map(tag => `<span style="display: inline-block; background: var(--secondary-accent); color: #ccc; padding: 0.25rem 0.5rem; font-size: 0.8rem; margin-right: 0.5rem; margin-bottom: 1rem;">${tag}</span>`).join('');
+                document.getElementById('modal-apply-link').href = buyLink;
+                jobModal.classList.add('active');
+                siteWrapper.classList.add('modal-is-active');
+            };
+            const closeJobModal = () => {
+                jobModal.classList.remove('active');
+                siteWrapper.classList.remove('modal-is-active');
+                startGlitchLoop();
+            };
 
             jobListingsElement.addEventListener('click', (e) => {
                 const card = e.target.closest('.job-card');
                 if (card) {
-                    const file = fileData.find(f => f.id == card.dataset.id);
-                    document.getElementById('modal-job-title').textContent = file.title;
-                    
-                    const dynamicContent = document.getElementById('modal-dynamic-content');
-                    dynamicContent.innerHTML = '';
-                    file.sections.forEach(sec => {
-                        dynamicContent.innerHTML += `<div class="modal-section"><h3>${sec.h}</h3><p>${sec.p}</p></div>`;
-                    });
-                    
-                    jobModal.classList.add('active');
+                    if (card.dataset.jobId == 99) {
+                        launchArcade();
+                    } else {
+                        openJobModal(card.dataset.jobId);
+                    }
                 }
             });
-
-            jobModalCloseBtn.addEventListener('click', () => jobModal.classList.remove('active'));
-
-            // --- IMAGE VIEWER MODAL LOGIC ---
+            jobModalCloseBtn.addEventListener('click', closeJobModal);
+            jobModal.addEventListener('click', (e) => { if (e.target === jobModal) closeJobModal(); });
+            
             const cameraModal = document.getElementById('camera-modal');
             const cameraBtn = document.getElementById('camera-btn');
+            const cameraModalCloseBtn = document.getElementById('camera-modal-close');
+            const prevImageBtn = document.getElementById('prev-image-btn');
+            const nextImageBtn = document.getElementById('next-image-btn');
             const cameraImageDisplay = document.getElementById('camera-image-display');
-            const imageCaption = document.getElementById('image-caption');
             const imageCounter = document.getElementById('image-counter');
             let currentImageIndex = 0;
 
-            const archiveImages = [
-                { src: 'image1.jpg', cap: "Fig 1: The card table in Act I. The brass scale underscores Bogost’s theory of procedural rhetoric." },
-                { src: 'image2.jpg', cap: "Fig 2: Leshy reaching across the table. The aesthetic creates what Zawacki calls the 'digital uncanny'." },
-                { src: 'image3.jpg', cap: "Fig 3: The visual shift in Act II/III highlights the metafictional nature of the game as unstable software." }
-            ];
-
             function showImage(index) {
                 currentImageIndex = index;
-                cameraImageDisplay.src = archiveImages[index].src;
-                imageCaption.textContent = archiveImages[index].cap;
-                imageCounter.textContent = `${index + 1} / ${archiveImages.length}`;
+                cameraImageDisplay.src = surveillanceImages[index];
+                imageCounter.textContent = `FILE: ${String(index + 1).padStart(2, '0')} / ${surveillanceImages.length}`;
+                prevImageBtn.disabled = index === 0;
+                nextImageBtn.disabled = index === surveillanceImages.length - 1;
             }
 
-            cameraBtn.addEventListener('click', () => {
+            const openCameraModal = () => {
+                stopGlitchLoop();
                 showImage(0);
                 cameraModal.classList.add('active');
+                siteWrapper.classList.add('modal-is-active');
+            };
+            const closeCameraModal = () => {
+                cameraModal.classList.remove('active');
+                siteWrapper.classList.remove('modal-is-active');
+                startGlitchLoop();
+            };
+            
+            cameraBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openCameraModal();
             });
+            cameraModalCloseBtn.addEventListener('click', closeCameraModal);
+            cameraModal.addEventListener('click', (e) => { if (e.target === cameraModal) closeCameraModal(); });
+            prevImageBtn.addEventListener('click', () => { if(currentImageIndex > 0) showImage(currentImageIndex - 1); });
+            nextImageBtn.addEventListener('click', () => { if(currentImageIndex < surveillanceImages.length - 1) showImage(currentImageIndex + 1); });
 
-            document.getElementById('camera-modal-close').addEventListener('click', () => cameraModal.classList.remove('active'));
-            document.getElementById('prev-image-btn').addEventListener('click', () => { if(currentImageIndex > 0) showImage(currentImageIndex - 1); });
-            document.getElementById('next-image-btn').addEventListener('click', () => { if(currentImageIndex < archiveImages.length - 1) showImage(currentImageIndex + 1); });
-
-            // Close modals on Escape key
             document.addEventListener('keydown', (e) => { 
                 if (e.key === 'Escape') {
-                    jobModal.classList.remove('active');
-                    cameraModal.classList.remove('active');
+                    closeJobModal();
+                    closeCameraModal();
+                }
+                 if (cameraModal.classList.contains('active')) {
+                    if (e.key === 'ArrowRight' && !nextImageBtn.disabled) {
+                        nextImageBtn.click();
+                    } else if (e.key === 'ArrowLeft' && !prevImageBtn.disabled) {
+                        prevImageBtn.click();
+                    }
                 }
             });
+            
+            const lightModeToggleBtn = document.getElementById('light-mode-toggle-btn');
+            const bodyElement = document.body;
+            lightModeToggleBtn.addEventListener('click', () => {
+                bodyElement.classList.toggle('light-mode');
+                lightModeToggleBtn.textContent = bodyElement.classList.contains('light-mode') ? 'Classic Dark Mode' : 'Classic Light Mode';
+            });
+
+            function launchArcade() {
+                stopGlitchLoop();
+                const mainContainer = document.querySelector('.container');
+                const arcadeContainer = document.getElementById('arcade-container');
+                
+                mainContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    mainContainer.style.display = 'none';
+                    arcadeContainer.style.display = 'block';
+                    
+                    requestAnimationFrame(() => {
+                        arcadeContainer.style.opacity = '1';
+                    });
+
+                    ArcadeManager.init();
+                }, 400);
+            }
+            
+            window.startGlitchLoop = startGlitchLoop;
+            
+            NarrativeManager.init();
         });
+    </script>
+    <script>
+        // --- NARRATIVE MANAGER SCRIPT ---
+        const NarrativeManager = {
+            overlay: null,
+            imageEl: null,
+            btn1: null,
+            btn2: null,
+            dialogContainer: null,
+            dialogTextEl: null,
+            dialogChoicesEl: null,
+            
+            FADE_DURATION: 400,
+            currentImageSrc: '',
+
+            dialogTree: {
+                start: {
+                    text: "You alone?",
+                    image: 'door.png',
+                    choices: [
+                        { text: "I'm alone", next: "silent_1" },
+                        { text: "I'm not alone", next: "who_is_this_1" }
+                    ]
+                },
+                silent_1: {
+                    text: "I know you're in there... It's me. Please, just let me in.",
+                    image: 'door.png',
+                    choices: [
+                        { text: "[Wait]", next: "heard_that" }
+                    ]
+                },
+                who_is_this_1: {
+                    text: "You don't recognize my voice? Look, I want to help.",
+                    image: 'door.png',
+                    choices: [
+                        { text: "[Listen]", next: "heard_that" }
+                    ]
+                },
+                heard_that: {
+                    text: "Wait... did you hear that? Please, just let me in.",
+                    image: 'door2.png', 
+                    blinks: 2, 
+                    choices: [
+                        { text: "[Unlock the door]", next: "end_scene_1" },
+                        { text: "What did you hear?", next: "i_miss_you" }
+                    ]
+                },
+                i_miss_you: {
+                    text: "Please... just let me in. I miss you.",
+                    image: 'door2.png',
+                    choices: [
+                        { text: "How did you find me?", next: "the_letter_reveal" }
+                    ]
+                },
+                the_letter_reveal: {
+                    text: "Here... This was given to me. From that 'Second Job' place...",
+                    image: 'door3.png',
+                    choices: [
+                        { text: "[Let her in]", next: "end_scene_1"}
+                    ]
+                },
+                end_scene_1: {
+                    text: "(The lock clicks...)",
+                    image: 'door.png'
+                }
+            },
+            
+            init() {
+                this.overlay = document.getElementById('narrative-overlay');
+                this.imageEl = document.getElementById('narrative-image');
+                this.btn1 = document.getElementById('narrative-btn-1');
+                this.btn2 = document.getElementById('narrative-btn-2');
+                this.dialogContainer = document.getElementById('dialog-container');
+                this.dialogTextEl = document.getElementById('dialog-text');
+                this.dialogChoicesEl = document.getElementById('dialog-choices');
+            },
+
+            start() {
+                this.overlay.style.display = 'flex';
+                requestAnimationFrame(() => { this.overlay.style.opacity = '1'; });
+
+                setTimeout(() => {
+                    this.btn1.textContent = "Go see the front door?";
+                    this.btn2.style.display = 'none';
+                    this.btn1.style.display = 'block';
+                    
+                    this.imageEl.src = 'knock.png';
+                    this.currentImageSrc = 'knock.png';
+                    this.imageEl.style.opacity = '1';
+
+                    setTimeout(() => {
+                        this.btn1.classList.add('visible');
+                    }, 2500);
+
+                    this.btn1.onclick = () => this.hallwaySequence();
+                }, this.FADE_DURATION);
+            },
+
+            hallwaySequence() {
+                this.btn1.classList.remove('visible');
+                this.btn1.style.display = 'none';
+                this.imageEl.style.opacity = '0';
+                
+                setTimeout(() => {
+                    const hallwayImages = ['hallway.png', 'hallway2.png'];
+                    const flashDelays = [100, 80, 120, 70, 250, 60, 100, 50, 400, 80, 110, 60, 90, 150, 300, 70];
+                    let currentImageIndex = 0;
+                    let flashIndex = 0;
+
+                    const performFlash = () => {
+                        if (flashIndex >= flashDelays.length) {
+                            this.imageEl.classList.remove('warping');
+                            this.imageEl.style.opacity = '0';
+                            
+                            setTimeout(() => {
+                                this.overlay.style.backgroundColor = 'rgba(0,0,0,1)';
+                                setTimeout(() => {
+                                    this.overlay.style.backgroundColor = '#000';
+                                    this.imageEl.src = 'hallway3.png';
+                                    this.currentImageSrc = 'hallway3.png';
+                                    this.imageEl.style.opacity = '1';
+    
+                                    this.btn2.textContent = "See who is behind the door...";
+                                    this.btn2.style.display = 'block';
+                                    setTimeout(() => this.btn2.classList.add('visible'), 1000);
+                                    this.btn2.onclick = () => this.finalScene();
+                                }, 1000); // Hold black screen
+                            }, this.FADE_DURATION);
+                            return;
+                        }
+                        
+                        currentImageIndex = (currentImageIndex + 1) % hallwayImages.length;
+                        const newImageSrc = hallwayImages[currentImageIndex];
+                        this.imageEl.src = newImageSrc;
+                        
+                        if (newImageSrc === 'hallway.png') {
+                            this.imageEl.classList.add('warping');
+                        } else {
+                            this.imageEl.classList.remove('warping');
+                        }
+                        
+                        this.imageEl.style.opacity = 0.7 + Math.random() * 0.3;
+
+                        setTimeout(performFlash, flashDelays[flashIndex]);
+                        flashIndex++;
+                    };
+                    
+                    performFlash();
+                    
+                }, this.FADE_DURATION);
+            },
+
+            finalScene() {
+                this.btn2.classList.remove('visible');
+                this.btn2.style.display = 'none';
+
+                setTimeout(() => {
+                    this.startDialog('start');
+                }, 2000);
+            },
+            
+            // --- THIS IS THE CORRECTED FUNCTION ---
+            startDialog(nodeKey) {
+                const node = this.dialogTree[nodeKey];
+                if (!node) return;
+
+                const showDialog = () => {
+                    if (this.dialogContainer.style.display !== 'block') {
+                        this.dialogContainer.style.display = 'block';
+                        requestAnimationFrame(() => this.dialogContainer.style.opacity = '1');
+                    }
+                    
+                    this.dialogChoicesEl.innerHTML = '';
+
+                    if (node.blinks) {
+                        setTimeout(() => this.performBlinks(node.blinks), 800);
+                    }
+
+                    this.typeDialog(node.text, () => {
+                        if (node.choices) {
+                            node.choices.forEach(choice => {
+                                const choiceBtn = document.createElement('button');
+                                choiceBtn.className = 'dialog-choice-btn';
+                                choiceBtn.textContent = choice.text;
+                                choiceBtn.onclick = () => this.startDialog(choice.next);
+                                this.dialogChoicesEl.appendChild(choiceBtn);
+                            });
+                        }
+                    });
+                };
+
+                if (node.image && this.currentImageSrc !== node.image) {
+                    showDialog();
+                    this.imageEl.style.opacity = 0; 
+                    
+                    setTimeout(() => {
+                        this.imageEl.src = node.image;
+                        this.currentImageSrc = node.image;
+                        this.imageEl.style.opacity = 1;
+                    }, this.FADE_DURATION);
+                } else {
+                    showDialog();
+                }
+            },
+
+            performBlinks(count) {
+                if (count <= 0) return;
+                this.overlay.style.backgroundColor = 'rgba(0,0,0,1)';
+                setTimeout(() => {
+                    this.overlay.style.backgroundColor = '#000';
+                    setTimeout(() => this.performBlinks(count - 1), 600);
+                }, 100);
+            },
+
+            typeDialog(text, callback, index = 0, speed = 90) {
+                if (index === 0) {
+                    this.dialogTextEl.innerHTML = '';
+                }
+                
+                if (index < text.length) {
+                    this.dialogTextEl.innerHTML = text.substring(0, index + 1) + '<span class="dialog-cursor"></span>';
+                    setTimeout(() => this.typeDialog(text, callback, index + 1, speed), speed);
+                } else {
+                    this.dialogTextEl.innerHTML = text; 
+                    if (callback) callback();
+                }
+            }
+        };
+
+        // --- ARCADE MANAGER SCRIPT ---
+        const isMobile = matchMedia('(pointer: coarse)').matches;
+        const tapOpts = { passive: true };
+        const tapBlock = { passive: false };
+
+        const ArcadeManager = {
+            currentCycle: 1, currentGameIndex: 0, totalScore: 0, GAMES_PER_CYCLE: 3, playsThisCycle: 0, MAX_CYCLES: 5, gameModules: [], availableGames: [],
+            dom: { overlayTransitionInfo: document.getElementById('overlay-transition-info'), cycleDisplay: document.getElementById('cycle-display'), totalScoreDisplay: document.getElementById('total-score-display'), currentGameDisplay: document.getElementById('current-game-display'), gameSpecificArea: document.getElementById('game-specific-area'), gameSpecificInfoArea: document.getElementById('game-specific-info-area'), logDisplay: document.getElementById('log-display'), overlay: document.getElementById('overlay'), overlayTitle: document.getElementById('overlay-title'), overlayConsoleText: document.getElementById('overlay-console-text'), overlayActionBtn: document.getElementById('overlay-action-btn'), bootSequenceDisplay: document.getElementById('boot-sequence-display'), cycleFill: document.getElementById('cycle-fill'), waveFill: document.getElementById('wave-fill'), cycleLabel: document.getElementById('cycle-label'), waveLabel: document.getElementById('wave-label'), },
+            init() { 
+                this.log("ArcadeManager initializing..."); 
+                this.gameModules = [MacrodataRefinementGame, SignalSequencerGame]; 
+                this.availableGames = [...this.gameModules]; 
+                this.dom.overlayActionBtn.onclick = () => this.startGameSequence(); 
+                
+                document.getElementById('exit-arcade-btn').onclick = () => {
+                    const arcadeContainer = document.getElementById('arcade-container');
+                    const mainContainer = document.querySelector('.container');
+                    
+                    arcadeContainer.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        arcadeContainer.style.display = 'none';
+                        mainContainer.style.display = 'block';
+                        requestAnimationFrame(() => {
+                            mainContainer.style.opacity = '1';
+                        });
+
+                        if(typeof window.startGlitchLoop === 'function') {
+                            window.startGlitchLoop();
+                        }
+                        
+                        setTimeout(() => {
+                            const knockOverlay = document.getElementById('knock-overlay');
+                            knockOverlay.style.display = 'flex';
+                            requestAnimationFrame(() => knockOverlay.classList.add('active'));
+
+                            setTimeout(() => {
+                                knockOverlay.style.opacity = '0';
+                                knockOverlay.classList.remove('active');
+                                
+                                setTimeout(() => {
+                                    knockOverlay.style.display = 'none';
+                                    knockOverlay.style.opacity = '1';
+
+                                    mainContainer.style.opacity = '0';
+                                    setTimeout(() => {
+                                        mainContainer.style.display = 'none';
+                                        NarrativeManager.start();
+                                    }, 500);
+
+                                }, 500);
+
+                            }, 2500);
+                        }, 1000);
+
+                    }, 400); 
+                };
+                
+                const panelToggleBtn = document.getElementById('panel-toggle-btn');
+                const infoPanel = document.querySelector('.global-info-panel');
+                if (panelToggleBtn && infoPanel) {
+                    panelToggleBtn.addEventListener('click', () => {
+                        infoPanel.classList.toggle('is-open');
+                        
+                        setTimeout(() => {
+                            const currentGame = this.gameModules[this.currentGameIndex];
+                            if (currentGame && typeof currentGame.resizeGrid === 'function') {
+                                currentGame.resizeGrid();
+                            }
+                        }, 300);
+                    });
+                }
+
+                const gameMainArea = document.querySelector('.game-main-area');
+                if(gameMainArea && infoPanel) {
+                    gameMainArea.addEventListener('click', () => {
+                        if (infoPanel.classList.contains('is-open')) {
+                            infoPanel.classList.remove('is-open');
+                             setTimeout(() => {
+                                const currentGame = this.gameModules[this.currentGameIndex];
+                                if (currentGame && typeof currentGame.resizeGrid === 'function') {
+                                    currentGame.resizeGrid();
+                                }
+                            }, 300);
+                        }
+                    });
+                }
+
+                this.showBootScreen(); 
+            },
+            showBootScreen() { this.dom.overlay.classList.remove('console-mode'); this.dom.overlayTransitionInfo.style.display = 'none'; this.dom.overlayTransitionInfo.textContent = ''; this.dom.overlayConsoleText.style.display = 'block'; this.dom.overlay.style.display = 'flex'; this.dom.overlayTitle.textContent = "SYSTEM BOOT"; this.dom.bootSequenceDisplay.style.display = 'block'; this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayActionBtn.textContent = "INITIATE SEQUENCE"; this.dom.overlayActionBtn.style.display = 'none'; const bootMsg = `> BOOTING grdn_OS v3.2…\n> Loading Game Modules:\n> - MACRODATA_RFN.MOD ......... [LOADED]\n> - SIGNAL_SEQUENCER.MOD ...... [LOADED]\n> WELCOME, OPERATIVE.\n> OBJECTIVE: Complete 5 cycles of increasing complexity.\n> Each cycle in grdn_OS contains 3 forking paths.\n>\n> Press 'INITIATE SEQUENCE' to begin.`; this.typeMessage( this.dom.overlayConsoleText, bootMsg, () => { this.dom.overlayActionBtn.style.display = 'block' } ); },
+            typeMessage(element, message, callback, index = 0, speed = 15) { if (index < message.length) { element.innerHTML += message[index] === '\n' ? '<br>' : message[index]; element.scrollTop = element.scrollHeight; setTimeout(() => this.typeMessage(element, message, callback, index + 1, speed), speed); } else { if (callback) callback(); } },
+            startGameSequence() { this.currentCycle = 1; this.playsThisCycle = 0; this.totalScore = 0; this.lastScoreDelta = 0; this.updateGlobalUI(); this.log("New game sequence started."); this.dom.overlay.classList.add('console-mode'); this.dom.bootSequenceDisplay.style.display = 'none'; this.dom.overlayConsoleText.style.display = 'block'; this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayTitle.textContent = "CHOOSE YOUR PATH"; const prompt = "Select any of the two games below to begin."; this.typeMessage( this.dom.overlayConsoleText, prompt + "\n\n", () => this.showFork() ); },
+            startCurrentGame() { this.dom.overlay.style.display = 'none'; const gameModule = this.gameModules[this.currentGameIndex]; const meta = GameMeta[gameModule.name.replace(/\s+/g, '')]; const bgURL = meta?.bg?.(this.currentCycle) || ''; this.dom.gameSpecificArea.style.backgroundImage = bgURL ? `url("${bgURL}")` : 'none'; this.dom.currentGameDisplay.textContent = gameModule.name; this.log(`Starting Game: ${gameModule.name}, Cycle: ${this.currentCycle}`); gameModule.init( this.dom.gameSpecificArea, this.dom.gameSpecificInfoArea, this.currentCycle, { onWin: (score) => this.handleGameWin(score), onLoss: (why) => this.handleGameLoss(why), addToLog: (msg) => this.log(`[${gameModule.name}] ${msg}`), updateTotalScore: (pts) => { this.totalScore += pts; this.updateGlobalUI(); } } ); gameModule.start(); },
+            restartCurrentGame() { this.log(`Restarting game: ${this.gameModules[this.currentGameIndex].name}`); this.startCurrentGame(); },
+            showTransitionScreen(isNewCycle, scoreDelta = 0, afterTypingCallback = null) { this.dom.overlay.style.display = 'flex'; this.dom.bootSequenceDisplay.style.display = 'none'; let title, message; if (isNewCycle) { title = `CYCLE ${this.currentCycle - 1} COMPLETE`; message = `Total Score: ${this.totalScore}\n\nStarting Cycle ${this.currentCycle}/5.\n`; } else { title = `PREPARING NEXT CHALLENGE`; message = `Total Score: ${this.totalScore}\n\nCycle ${this.currentCycle}/5 continues.\n`; } if (title.includes('COMPLETE')) this.dom.overlayTitle.style.color = '#00FF00'; else if (title.includes('FAILED')) this.dom.overlayTitle.style.color = '#FF0040'; else this.dom.overlayTitle.style.color = '#00A0FF'; if (scoreDelta > 0) message = `+${scoreDelta}\n` + message; this.dom.overlayTitle.textContent = title; this.dom.overlay.classList.add('console-mode'); this.dom.overlayConsoleText.innerHTML = ''; this.dom.overlayActionBtn.style.display = 'none'; const typingString = message + '\n\nChoose your PATH to proceed.'; this.typeMessage( this.dom.overlayConsoleText, typingString, () => { const cursor = document.createElement('span'); cursor.classList.add('blinking-cursor'); cursor.textContent = '_'; this.dom.overlayConsoleText.appendChild(cursor); this.dom.overlayActionBtn.style.display = 'block'; this.dom.overlayActionBtn.textContent = 'CONTINUE'; this.dom.overlayActionBtn.onclick = () => this.startCurrentGame(); if (afterTypingCallback) afterTypingCallback(); } ); this.lastScoreDelta = 0; },
+            showFork() { const gallery = document.getElementById('choice-gallery'); gallery.style.display = 'flex'; gallery.innerHTML = ''; const choices = [...this.gameModules]; choices.sort(() => Math.random() - 0.5); choices.forEach(mod => { if (!mod) return; const meta = GameMeta[mod.name.replace(/\s+/g, '')]; const card = document.createElement('div'); card.className = 'game-card'; card.innerHTML = ` <img src="${meta.thumb}" alt=""> <div class="card-title">${mod.name}</div> <div class="card-difficulty">${meta.difficultyName(this.currentCycle)}</div> <div class="card-how">${meta.shortHow.replace(/\n/g,'<br>')}</div>`; card.onclick = () => { gallery.style.display = 'none'; this.currentGameIndex = this.gameModules.indexOf(mod); this.startCurrentGame(); }; gallery.appendChild(card); }); this.dom.overlayActionBtn.style.display = 'none'; this.dom.overlayTransitionInfo.style.display = 'none'; },
+            updateGlobalUI() { this.dom.cycleDisplay.textContent = this.currentCycle; this.dom.totalScoreDisplay.textContent = this.totalScore; this.updateProgressBars(); },
+            updateProgressBars() { const cyclePct = (this.currentCycle) / this.MAX_CYCLES * 100; this.dom.cycleFill.style.height = cyclePct + '%'; this.dom.cycleLabel.textContent = `${this.currentCycle}/${this.MAX_CYCLES}`; const wavePct = this.playsThisCycle / this.GAMES_PER_CYCLE * 100; this.dom.waveFill.style.height = wavePct + '%'; this.dom.waveLabel.textContent = `${this.playsThisCycle}/${this.GAMES_PER_CYCLE}`; },
+            handleGameWin(scoreEarnedThisGame) { this.lastScoreDelta = scoreEarnedThisGame; this.totalScore += scoreEarnedThisGame; this.playsThisCycle += 1; this.updateGlobalUI(); const played = this.gameModules[this.currentGameIndex]; if (this.playsThisCycle >= this.GAMES_PER_CYCLE) { this.playsThisCycle = 0; this.currentCycle++; if (this.currentCycle > this.MAX_CYCLES) { this.overallWin(); return; } this.showTransitionScreen(true, scoreEarnedThisGame, () => this.showFork()); } else { this.showTransitionScreen(false, scoreEarnedThisGame, () => this.showFork()); } if (played.end) played.end(); },
+            handleGameLoss(reason) { this.log(`Game ${this.gameModules[this.currentGameIndex].name} LOST: ${reason}`); if (this.gameModules[this.currentGameIndex].end) this.gameModules[this.currentGameIndex].end(); const summary = [`Reason: ${reason}`, `Total Score: ${this.totalScore}`, `Reached Cycle: ${this.currentCycle}`, `Failed Game: ${this.gameModules[this.currentGameIndex].name}`].join('\n'); const d = this.dom; d.overlay.style.display = 'flex'; d.overlay.classList.remove('console-mode'); d.overlayTitle.textContent = 'SEQUENCE FAILED'; d.bootSequenceDisplay.style.display = 'none'; d.overlayConsoleText.style.display = 'none'; d.overlayTransitionInfo.style.display = 'block'; d.overlayTransitionInfo.textContent = summary; d.overlayActionBtn.style.display = 'block'; d.overlayActionBtn.textContent = 'RESTART'; d.overlayActionBtn.onclick = () => ArcadeManager.restartCurrentGame(); },
+            overallWin() { this.log("All cycles complete! VICTORY!"); this.dom.overlay.style.display = 'flex'; this.dom.overlayTitle.textContent = "SEQUENCE MASTERED!"; this.dom.bootSequenceDisplay.style.display = 'none'; this.dom.overlayTransitionInfo.innerHTML = `Congratulations, Operative! You have mastered all ${this.MAX_CYCLES} cycles!<br>Final Score: ${this.totalScore}`; this.dom.overlayActionBtn.textContent = "REPLAY"; this.dom.overlayActionBtn.onclick = () => window.location.reload(); },
+            log(message) { console.log(message); const time = new Date().toLocaleTimeString(); this.dom.logDisplay.innerHTML += `[${time}] ${message}\n`; this.dom.logDisplay.scrollTop = this.dom.logDisplay.scrollHeight; }
+        };
+
+        const GameMeta = { MacrodataRefinement: { thumb: '', shortHow: 'The numbers feel... incongruous. Find them.', difficultyName(cycle) { return ['File 2A', 'File 3C', 'File 4F', 'File 5D', 'File 6B'][cycle - 1] || 'Unknown'; }, bg: c => '' }, SignalSequencer: { thumb: '', shortHow: 'Repeat the sequence as it grows from 2 to 10 signals.', difficultyName(cycle) { return ['Echo', 'Repeat', 'Sync', 'Stream', 'Flow'][cycle - 1] || 'Unknown'; }, bg: c => '' }, };
+        
+        const MacrodataRefinementGame = {
+            name: "Macrodata Refinement",
+            container: null,
+            infoContainer: null,
+            cycle: 1,
+            callbacks: null,
+            gs: {},
+            config: {
+                difficulties: [
+                    { gridSize: 10, numberRange: [1, 500] }, { gridSize: 12, numberRange: [1, 999] }, { gridSize: 14, numberRange: [1, 999] }, { gridSize: 15, numberRange: [1, 999] }, { gridSize: 16, numberRange: [1, 999] },
+                ]
+            },
+            init(container, infoContainer, cycle, callbacks) { this.container = container; this.infoContainer = infoContainer; this.cycle = cycle; this.callbacks = callbacks; const cIdx = Math.min(cycle - 1, this.config.difficulties.length - 1); this.gs = { ...this.config.difficulties[cIdx], grid: [], targets: [], foundTargets: [], incorrectClicks: 0, targetsToWin: 0, gameOver: false }; this.renderInstructions(); },
+            start() {},
+            end() { this.removeEventListeners(); this.callbacks.addToLog("File refined."); },
+            renderInstructions() { this.container.innerHTML = ` <div class="mdr-instructions"> <h3>// Macrodata Refinement</h3> <p>For your edification. The numbers feel wrong. Find the ones that don't belong and bin them. Please try to enjoy each number equally.</p> <button id="mdr-start-btn" class="find-jobs-btn">Begin Refinement</button> </div>`; document.getElementById('mdr-start-btn').onclick = () => this.beginRefinement(); },
+            beginRefinement() { this.generateGridAndTargets(); this.renderUI(); this.updateInfo(); this.callbacks.addToLog("Macrodata Refinement initiated."); this.addEventListeners(); },
+            generateGridAndTargets() { this.gs.grid = Array(this.gs.gridSize).fill(null).map(() => Array(this.gs.gridSize).fill(0).map(() => Math.floor(Math.random() * (this.gs.numberRange[1] - this.gs.numberRange[0] + 1)) + this.gs.numberRange[0])); this.gs.targets = []; for (let r = 0; r < this.gs.gridSize; r++) { for (let c = 0; c < this.gs.gridSize; c++) { const neighbors = this.getNeighbors(r, c); if (neighbors.length < 3) continue; const val = this.gs.grid[r][c]; if (neighbors.every(n => val > n) || neighbors.every(n => val < n)) { this.gs.targets.push({ r, c }); } } } if (this.gs.targets.length < 4) { this.generateGridAndTargets(); return; } this.gs.targetsToWin = Math.ceil(this.gs.targets.length / 2); },
+            getNeighbors(r, c) { const neighbors = []; for (let dr = -1; dr <= 1; dr++) { for (let dc = -1; dc <= 1; dc++) { if (dr === 0 && dc === 0) continue; const nr = r + dr, nc = c + dc; if (nr >= 0 && nr < this.gs.gridSize && nc >= 0 && nc < this.gs.gridSize) { neighbors.push(this.gs.grid[nr][nc]); } } } return neighbors; },
+            renderUI() {
+                this.container.innerHTML = ` <div id="mdr-container"> <div id="mdr-grid"></div> <div id="mdr-bins"> <div class="mdr-bin"><div class="mdr-bin-fill"></div></div><div class="mdr-bin"><div class="mdr-bin-fill"></div></div> <div class="mdr-bin"><div class="mdr-bin-fill"></div></div><div class="mdr-bin"><div class="mdr-bin-fill"></div></div> <div class="mdr-bin"><div class="mdr-bin-fill"></div></div> </div> </div>`;
+                const gridEl = document.getElementById('mdr-grid');
+                const gridSize = this.gs.gridSize;
+                
+                for (let r = 0; r < gridSize; r++) {
+                    for (let c = 0; c < gridSize; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'mdr-cell';
+                        cell.dataset.r = r;
+                        cell.dataset.c = c;
+                        const inner = document.createElement('span');
+                        inner.className = 'mdr-cell-inner';
+                        inner.textContent = this.gs.grid[r][c];
+                        inner.classList.add(`float${(r+c)%3 + 1}`);
+                        inner.style.animationDuration = `${Math.random() * 5 + 8}s`;
+                        inner.style.animationDelay = `${Math.random() * 8}s`;
+                        cell.appendChild(inner);
+                        gridEl.appendChild(cell);
+                    }
+                }
+                this.resizeGrid();
+            },
+            resizeGrid() {
+                const gridEl = document.getElementById('mdr-grid');
+                const binsEl = document.getElementById('mdr-bins');
+                if (!gridEl) return;
+                const binAreaHeight = 40;
+                let availableWidth = this.container.offsetWidth - 20;
+                let availableHeight = this.container.offsetHeight - binAreaHeight;
+                
+                const isMobileLandscape = window.matchMedia("(max-width: 900px) and (orientation: landscape)").matches;
+                let maxContainerSize;
+
+                if (isMobileLandscape) {
+                    this.container.style.overflowY = 'auto';
+                    maxContainerSize = availableWidth;
+                } else {
+                    this.container.style.overflowY = 'hidden';
+                    maxContainerSize = Math.min(availableWidth, availableHeight);
+                }
+
+                const gridSize = this.gs.gridSize;
+                const gap = Math.max(2, Math.floor(maxContainerSize * 0.015));
+                const totalGapSize = (gridSize - 1) * gap;
+                const cellSize = Math.floor((maxContainerSize - totalGapSize) / gridSize);
+                const actualGridWidth = (cellSize * gridSize) + totalGapSize;
+                
+                gridEl.style.gap = `${gap}px`;
+                gridEl.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize}px)`;
+                gridEl.style.gridTemplateRows = `repeat(${gridSize}, ${cellSize}px)`;
+                binsEl.style.width = `${actualGridWidth}px`;
+                gridEl.querySelectorAll('.mdr-cell-inner').forEach(inner => {
+                     inner.style.fontSize = `${Math.max(8, cellSize * 0.45)}px`;
+                });
+            },
+            updateInfo() { this.infoContainer.innerHTML = `<div>File: K-239-2B // Mistakes: ${this.gs.incorrectClicks} / 5</div>`; },
+            addEventListeners() { 
+                const gridEl = document.getElementById('mdr-grid'); 
+                if (!gridEl) return;
+                this._handleMouseMove = this.handleMouseMove.bind(this); 
+                this._handleMouseLeave = this.handleMouseLeave.bind(this); 
+                this._handleCellClick = this.handleCellClick.bind(this);
+                this._handleResize = this.resizeGrid.bind(this);
+                gridEl.addEventListener('mousemove', this._handleMouseMove); 
+                gridEl.addEventListener('mouseleave', this._handleMouseLeave); 
+                gridEl.addEventListener('click', this._handleCellClick);
+                window.addEventListener('resize', this._handleResize);
+            },
+            removeEventListeners() { 
+                const gridEl = document.getElementById('mdr-grid'); 
+                if (!gridEl) return;
+                gridEl.removeEventListener('mousemove', this._handleMouseMove); 
+                gridEl.removeEventListener('mouseleave', this._handleMouseLeave); 
+                gridEl.removeEventListener('click', this._handleCellClick);
+                window.removeEventListener('resize', this._handleResize);
+            },
+            handleMouseMove(e) { const gridEl = document.getElementById('mdr-grid'); if (!gridEl) return; const rect = gridEl.getBoundingClientRect(); const mouseX = e.clientX - rect.left; const mouseY = e.clientY - rect.top; const gap = parseInt(gridEl.style.gap) || 0; const cellSize = (gridEl.offsetWidth - (this.gs.gridSize - 1) * gap) / this.gs.gridSize; const c = Math.floor(mouseX / (cellSize + gap)); const r = Math.floor(mouseY / (cellSize + gap)); if (r < 0 || r >= this.gs.gridSize || c < 0 || c >= this.gs.gridSize) { this.handleMouseLeave(); return; } const maxLift = 1.8; document.querySelectorAll('.mdr-cell').forEach(cell => { const cr = parseInt(cell.dataset.r); const cc = parseInt(cell.dataset.c); const dist = Math.max(Math.abs(r - cr), Math.abs(c - cc)); let scale = 1.0; if (dist === 0) scale = maxLift; else if (dist === 1) scale = 1.0 + ((maxLift - 1.0) * 0.5); else if (dist === 2) scale = 1.0 + ((maxLift - 1.0) * 0.1); cell.style.transform = `scale(${scale})`; cell.style.zIndex = dist <= 2 ? 5 - dist : 0; }); },
+            handleMouseLeave() { document.querySelectorAll('.mdr-cell').forEach(cell => { cell.style.transform = 'scale(1)'; cell.style.zIndex = 0; }); },
+            handleCellClick(e) { if (this.gs.gameOver) return; const cell = e.target.closest('.mdr-cell'); if (!cell || cell.classList.contains('found')) return; const r = parseInt(cell.dataset.r); const c = parseInt(cell.dataset.c); const isTarget = this.gs.targets.some(t => t.r === r && t.c === c); if (isTarget) { this.gs.foundTargets.push({ r, c }); cell.classList.add('found'); this.animateToBin(cell); } else { this.gs.incorrectClicks++; this.updateInfo(); const inner = cell.querySelector('.mdr-cell-inner'); inner.classList.add('was-incorrect'); setTimeout(() => inner.classList.remove('was-incorrect'), 1000); if (this.gs.incorrectClicks >= 5) { this.gs.gameOver = true; this.callbacks.onLoss("Too many incorrect refinements."); } } },
+            animateToBin(cell) { cell.style.pointerEvents = 'none'; const inner = cell.querySelector('.mdr-cell-inner'); const binsEl = document.getElementById('mdr-bins'); const binIndex = this.gs.foundTargets.length - 1; const targetBin = binsEl.children[binIndex % 5]; const cellRect = cell.getBoundingClientRect(); const binRect = targetBin.getBoundingClientRect(); const tempClone = inner.cloneNode(true); tempClone.style.position = 'absolute'; tempClone.style.left = `${cellRect.left + cellRect.width / 2 - tempClone.offsetWidth / 2}px`; tempClone.style.top = `${cellRect.top + cellRect.height / 2 - tempClone.offsetHeight / 2}px`; tempClone.style.margin = 0; tempClone.style.zIndex = 100; tempClone.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in, color 0.5s'; tempClone.style.color = 'var(--primary-accent)'; tempClone.style.textShadow = '0 0 8px var(--primary-accent)'; document.body.appendChild(tempClone); requestAnimationFrame(() => { const dx = (binRect.left + binRect.width / 2) - (cellRect.left + cellRect.width / 2); const dy = (binRect.top + binRect.height / 2) - (cellRect.top + cellRect.height / 2); tempClone.style.transform = `translate(${dx}px, ${dy}px) scale(0.1)`; tempClone.style.opacity = '0'; }); setTimeout(() => { tempClone.remove(); this.updateBins(); this.checkWinCondition(); }, 500); },
+            updateBins() { const progress = this.gs.foundTargets.length / this.gs.targetsToWin; const fills = document.querySelectorAll('.mdr-bin-fill'); const fullBins = Math.floor(progress * 5); const partialFill = (progress * 5) % 1; fills.forEach((fill, i) => { if (i < fullBins) fill.style.width = '100%'; else if (i === fullBins) fill.style.width = `${partialFill * 100}%`; else fill.style.width = '0%'; }); },
+            checkWinCondition() { if (this.gs.foundTargets.length >= this.gs.targetsToWin) { this.gs.gameOver = true; this.callbacks.addToLog("File completion successful."); this.callbacks.onWin(this.gs.targets.length * 75); } }
+        };
+
+        const SignalSequencerGame = { name: "Signal Sequencer", container: null, infoContainer: null, cycle: 1, callbacks: null, gs: {}, config: { gridSizes: [3, 4, 4, 5, 5], startSequenceLength: 2, maxSequenceLength: 10, flashSpeed: [600, 550, 500, 450, 400], timePerSignal: 5, }, init(container, infoContainer, cycle, callbacks) { this.container = container; this.infoContainer = infoContainer; this.cycle = cycle; this.callbacks = callbacks; const cIdx = Math.min(cycle - 1, this.config.gridSizes.length - 1); this.gs = { gridSize: this.config.gridSizes[cIdx], currentSequenceLength: this.config.startSequenceLength, maxLevel: this.config.maxSequenceLength - this.config.startSequenceLength + 1, flashSpeed: this.config.flashSpeed[cIdx], sequence: [], playerSequence: [], state: 'INSTRUCTIONS', timerId: null, timeLeft: 0 }; this.renderInstructions(); this.updateInfo(); }, start() { this.callbacks.addToLog("Signal Sequencer initialized. Waiting for user to start."); this.gs.timerId = setInterval(() => { if (this.gs.state === 'GUESSING') { this.gs.timeLeft--; this.updateInfo(); if (this.gs.timeLeft <= 0) this.gameOver("Time out!"); } }, 1000); }, end() { if (this.gs.timerId) clearInterval(this.gs.timerId); this.gs.state = 'OVER'; this.callbacks.addToLog("Signal Sequencer ended."); }, renderInstructions() { this.container.innerHTML = ` <div class="sequencer-instructions"> <h3>// Signal Sequencer</h3> <p>Memorize the signal sequence as it plays on the grid. <br> Repeat the sequence by clicking the pads in the correct order. <br> The sequence grows longer each round. Complete all levels to succeed.</p> <button id="sequencer-start-btn" class="find-jobs-btn">START</button> </div>`; document.getElementById('sequencer-start-btn').onclick = () => this.beginFirstRound(); }, beginFirstRound() { this.callbacks.addToLog("Signal Sequencer started."); this.renderGrid(); this.setupNextLevel(); }, setupNextLevel() { this.gs.playerSequence = []; this.gs.timeLeft = this.gs.currentSequenceLength * this.config.timePerSignal; this.generateSequence(); this.gs.state = 'WATCHING'; this.updateInfo(); this.callbacks.addToLog(`Presenting new sequence of length ${this.gs.currentSequenceLength}.`); setTimeout(() => this.showSequence(), 1000); }, updateInfo() { let status = this.gs.state; let levelInfo = `Level: ${this.gs.currentSequenceLength - this.config.startSequenceLength + 1}/${this.gs.maxLevel}`; if (this.gs.state === 'INSTRUCTIONS') { status = "AWAITING START"; levelInfo = "Standby"; } if (this.gs.state === 'GUESSING') status = `REPEAT (${this.gs.timeLeft}s)`; this.infoContainer.innerHTML = `<div>${levelInfo} | Status: ${status}</div>`; }, renderGrid() { const gridEl = document.createElement('div'); gridEl.className = 'grid-display'; gridEl.id = 'sequencer-grid'; gridEl.style.gridTemplateColumns = `repeat(${this.gs.gridSize}, 60px)`; gridEl.style.gridTemplateRows = `repeat(${this.gs.gridSize}, 60px)`; for (let r = 0; r < this.gs.gridSize; r++) { for (let c = 0; c < this.gs.gridSize; c++) { const cell = document.createElement('div'); cell.className = 'grid-cell sequencer-cell'; cell.dataset.r = r; cell.dataset.c = c; cell.addEventListener('click', () => this.handlePlayerClick(r, c)); gridEl.appendChild(cell); } } this.container.innerHTML = ''; this.container.appendChild(gridEl); }, generateSequence() { this.gs.sequence = []; for (let i = 0; i < this.gs.currentSequenceLength; i++) { this.gs.sequence.push([ Math.floor(Math.random() * this.gs.gridSize), Math.floor(Math.random() * this.gs.gridSize) ]); } }, showSequence() { let i = 0; const showNext = () => { if (i < this.gs.sequence.length && this.gs.state === 'WATCHING') { const [r, c] = this.gs.sequence[i]; this.flashCell(r, c); i++; setTimeout(showNext, this.gs.flashSpeed); } else { this.gs.state = 'GUESSING'; this.updateInfo(); this.callbacks.addToLog("Your turn."); } }; showNext(); }, flashCell(r, c, duration = 300) { const cell = this.container.querySelector(`.sequencer-cell[data-r="${r}"][data-c="${c}"]`); if (cell) { cell.classList.add('active'); setTimeout(() => cell.classList.remove('active'), duration); } }, handlePlayerClick(r, c) { if (this.gs.state !== 'GUESSING') return; this.flashCell(r, c); const currentStep = this.gs.playerSequence.length; const correctStep = this.gs.sequence[currentStep]; if (r === correctStep[0] && c === correctStep[1]) { this.gs.playerSequence.push([r, c]); if (this.gs.playerSequence.length === this.gs.sequence.length) { this.callbacks.addToLog("Correct sequence!"); this.callbacks.updateTotalScore(this.gs.currentSequenceLength * 20); if (this.gs.currentSequenceLength >= this.config.maxSequenceLength) { this.gameWon(); } else { this.gs.currentSequenceLength++; this.setupNextLevel(); } } } else { this.gameOver("Sequence mismatch."); } }, gameWon() { this.callbacks.addToLog("All sequences matched!"); const score = this.gs.timeLeft * 50; this.callbacks.onWin(score); this.end(); }, gameOver(reason) { if (this.gs.state === 'OVER') return; this.callbacks.addToLog(`Failed: ${reason}`); this.callbacks.onLoss(reason); this.end(); } };
+    </script>
+    
+    <!-- ADDED SCRIPT FOR MOBILE VIEWPORT FIX -->
+    <script>
+        function setViewportHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', setViewportHeight);
     </script>
 </body>
 </html>
