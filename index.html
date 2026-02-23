@@ -6,189 +6,163 @@
     <title>OLD_DATA | Luke Carder Archive</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Metal+Mania&family=Bahiana&display=swap" rel="stylesheet">
+    <!-- Imported VT323 for the retro pixel aesthetic and Creepster for horror elements -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Creepster&display=swap" rel="stylesheet">
     <style>
         :root {
-            --background: #0d0d0d;
-            --foreground: #e0e0e0;
+            --background: #080808; /* Deep void black */
+            --foreground: #d1c8b8; /* Bone / Parchment white */
             --border-color: #333333;
-            --primary-accent: #00ff7f; /* Terminal Green */
-            --secondary-accent: #4a4a4a;
-            --background-rgb: 13, 13, 13;
-        }
-
-        body.light-mode {
-            --background: #f5f5f5;
-            --foreground: #1a1a1a;
-            --border-color: #cccccc;
-            --primary-accent: #008040;
-            --secondary-accent: #e0e0e0;
-            --background-rgb: 245, 245, 245;
+            --primary-accent: #00e5ff; /* P03 Cyan / Floppy Disk Blue */
+            --blood-red: #8b0000; /* Leshy / Sacrifice Red */
+            --background-rgb: 8, 8, 8;
         }
 
         *, *::before, *::after { box-sizing: border-box; }
         
         html { 
             height: 100%;
-            font-size: clamp(9px, 1vw, 14px);
+            font-size: clamp(12px, 1.2vw, 18px); /* Slightly larger for the pixel font */
         }
 
         body {
-            font-family: 'Roboto Mono', monospace;
+            font-family: 'VT323', monospace;
             margin: 0;
-            -webkit-font-smoothing: antialiased;
+            -webkit-font-smoothing: none; /* Disables smoothing for crispy pixels */
             height: 100%;
             overflow: hidden;
             background-color: #000;
             position: relative;
+            color: var(--foreground);
         }
         
         .site-wrapper {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
             background-image: url('bg.png'); /* KEEP YOUR LAPTOP BACKGROUND */
             background-size: 100% 120%;
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
-            filter: brightness(80%) contrast(110%);
+            filter: brightness(70%) contrast(120%);
         }
         
         @media (min-aspect-ratio: 16/9) { .site-wrapper { width: 100vw; height: calc(100vw * 9 / 16); } }
         @media (max-aspect-ratio: 16/9) { .site-wrapper { height: 100vh; width: calc(100vh * 16 / 9); } }
         
-        .site-wrapper.modal-is-active .container { overflow: hidden; }
+        .site-wrapper.modal-is-active .container { overflow: hidden; filter: blur(2px); }
 
         @keyframes scanline-glitch { 0% { top: -10%; opacity: 1; } 100% { top: 110%; opacity: 1; } }
-        @keyframes flicker { 0%{opacity:0.9} 20%{opacity:0.95} 40%{opacity:0.88} 60%{opacity:1} 80%{opacity:0.92} 100%{opacity:0.98} }
-
-        #glitch-overlay {
-            display: none;
-            position: absolute;
-            top: 18.0%; left: 22.5%; width: 59.8%; height: 62.5%;
-            z-index: 500; overflow: hidden; background-color: #000;
-        }
-
-        #glitch-overlay.is-glitching { display: block; animation: glitch 1000ms cubic-bezier(.25,.46,.45,.94) both; }
-        #glitch-overlay img { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.5) grayscale(0.2); }
-        #glitch-overlay img.active { display: block; }
-        
-        @keyframes glitch {
-            0% { clip-path: inset(80% 0 5% 0); transform: translateX(-10px); }
-            10% { clip-path: inset(10% 0 75% 0); }
-            25% { clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); opacity: 1; }
-            75% { clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); opacity: 1; }
-            85% { clip-path: inset(45% 0 45% 0); transform: translateX(5px); filter: hue-rotate(45deg); }
-            100% { clip-path: inset(90% 0 5% 0); transform: translateX(-10px); }
-        }
+        @keyframes flicker { 0%{opacity:0.95} 50%{opacity:0.85} 100%{opacity:0.98} }
 
         .container { 
             position: absolute; top: 18.0%; left: 22.5%; width: 59.8%; height: 62.5%;
             background-color: var(--background); color: var(--foreground);
             overflow-y: auto; padding: 2rem; z-index: 2;
-            transition: background-color 0.3s ease, color 0.3s ease, opacity 0.4s ease-in-out;
+            border: 2px solid #1a1a1a;
+            box-shadow: inset 0 0 30px #000; /* CRT Vignette */
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0 0 2px rgba(209, 200, 184, 0.4); /* Phosphor glow */
         }
         
+        /* CRT Scanlines */
         .container::after {
             content: ' '; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; animation: flicker 0.15s infinite;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            z-index: 2; background-size: 100% 4px; pointer-events: none; animation: flicker 0.15s infinite;
         }
-        
-        .container::before {
-            content: ''; position: absolute; top: -10%; left: 0; width: 100%; height: 1px;
-            background: rgba(255, 255, 255, 0.08); filter: blur(1px); opacity: 0; z-index: 5; pointer-events: none;
-        }
-
-        .site-wrapper.scanline-active .container::before { animation: scanline-glitch 0.4s linear; }
 
         a { color: var(--primary-accent); text-decoration: none; transition: all 0.2s ease; }
-        a:hover { background-color: var(--primary-accent); color: var(--background); text-shadow: 0 0 5px var(--primary-accent); }
-        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
-        .logo { font-size: 1.5rem; font-weight: 700; }
-        .logo span { color: var(--primary-accent); }
-        .main-nav a { margin-left: 1.5rem; font-size: 1rem; cursor: pointer; }
+        a:hover { background-color: var(--primary-accent); color: var(--background); text-shadow: none; }
         
-        .hero { display: flex; flex-direction: column; justify-content: center; text-align: center; margin: 1rem 0; position: relative; z-index: 1; min-height: 15rem; }
-        .hero h1 { font-weight: 700; margin: 0; font-size: clamp(2rem, 9vw, 5rem); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-        #typing-text-secondary { font-size: clamp(0.9rem, 3.5vw, 1.75rem); color: #aaa; margin-top: 0.5rem; }
-        .hero p { font-size: clamp(0.9rem, 2.5vw, 1.2rem); color: #aaa; margin: 1.5rem 0 0 0; padding: 0 1rem; line-height: 1.5; opacity: 0; transform: translateY(15px); transition: opacity 0.5s ease-out 0.2s, transform 0.5s ease-out 0.2s; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem; }
+        .logo { font-size: 2rem; letter-spacing: 2px; }
+        .logo span { color: var(--blood-red); animation: flicker 2s infinite; }
+        .main-nav a { margin-left: 1.5rem; font-size: 1.2rem; cursor: pointer; border: 1px solid var(--primary-accent); padding: 4px 8px; }
+        
+        .hero { display: flex; flex-direction: column; justify-content: center; text-align: center; margin: 1rem 0; position: relative; z-index: 1; min-height: 12rem; }
+        .hero h1 { font-weight: normal; margin: 0; font-size: clamp(2.5rem, 6vw, 4rem); letter-spacing: 2px; }
+        #typing-text-main { color: var(--primary-accent); text-shadow: 0 0 8px var(--primary-accent); }
+        #typing-text-secondary { font-size: clamp(1.2rem, 3vw, 2rem); color: #888; margin-top: 0.5rem; display: block; }
+        .hero p { font-size: 1.2rem; color: #aaa; margin: 1.5rem 0 0 0; opacity: 0; transform: translateY(10px); transition: opacity 0.5s, transform 0.5s; }
         .hero p.fade-in { opacity: 1; transform: translateY(0); }
 
-        .typing-cursor { display: none; background-color: var(--foreground); width: 10px; height: 1.5rem; margin-left: 8px; animation: blink 1s step-end infinite; vertical-align: middle; }
-        @keyframes blink { from, to { background-color: transparent; } 50% { background-color: var(--foreground); } }
+        .typing-cursor { display: none; background-color: var(--primary-accent); width: 12px; height: 1.5rem; margin-left: 5px; animation: blink 1s step-end infinite; vertical-align: bottom; }
+        @keyframes blink { from, to { opacity: 0; } 50% { opacity: 1; } }
         
-        .listings-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        .job-listings-container h2 { font-size: 1.5rem; margin: 0; }
-        #job-count { color: #888; font-weight: 400; font-size: 1rem; margin-left: 10px; }
+        .listings-header { border-bottom: 2px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+        .job-listings-container h2 { font-size: 1.8rem; margin: 0; color: var(--foreground); }
         
-        .job-card { background-color: transparent; border: 1px solid var(--border-color); padding: 1.5rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.2s ease; position: relative; z-index: 10; }
-        .job-card:hover { background-color: rgba(0, 255, 127, 0.05); border-color: var(--primary-accent); transform: translateY(-3px); }
-        .job-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .job-card .job-title { margin: 0; font-size: 1.5rem; color: var(--primary-accent); }
-        .job-card .company-info { margin: 0.25rem 0 1rem 0; color: #aaa; }
-        .job-posted-date { font-size: 0.9rem; color: #888; text-align: right; }
+        /* DOS Directory Style Files */
+        .job-card { 
+            background-color: transparent; border: 1px solid var(--border-color); border-left: 4px solid var(--primary-accent);
+            padding: 1rem 1.5rem; margin-bottom: 0.8rem; cursor: pointer; transition: all 0.1s ease; position: relative; z-index: 10;
+        }
+        .job-card:hover { background-color: rgba(0, 229, 255, 0.1); border-color: var(--primary-accent); transform: translateX(5px); }
+        .job-card-header { display: flex; justify-content: space-between; align-items: center; }
+        .job-card .job-title { margin: 0; font-size: 1.6rem; color: var(--foreground); }
+        .job-card .company-info { margin: 0; color: #888; font-size: 1.1rem; }
+        .job-posted-date { font-size: 1.1rem; color: var(--primary-accent); }
         
+        /* Modals */
         .modal-overlay { 
             position: absolute; top: 18.0%; left: 22.5%; width: 59.8%; height: 62.5%;
-            background: transparent; display: flex; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; pointer-events: none; 
+            background: rgba(0,0,0,0.85); display: flex; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.2s ease; pointer-events: none; 
         }
         .modal-overlay.active { opacity: 1; visibility: visible; pointer-events: all; }
         
         .modal-content { 
-            background: var(--background); color: var(--foreground); border: 1px solid var(--primary-accent); 
-            width: 100%; height: 100%; overflow-y: auto; padding: 2rem; position: relative; 
+            background: var(--background); color: var(--foreground); border: 2px solid var(--primary-accent); 
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.2); width: 95%; height: 95%; margin: auto; overflow-y: auto; padding: 2rem; position: relative; 
         }
 
-        .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; cursor: pointer; color: var(--primary-accent); transition: color 0.2s ease; z-index: 10; }
-        .modal-close:hover { color: #fff; text-shadow: 0 0 10px var(--primary-accent); }
-        #modal-job-title { margin-top: 0; font-size: 2rem; color: var(--primary-accent); }
-        #modal-company-info { color: #aaa; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;}
+        .modal-close { position: absolute; top: 1rem; right: 1.5rem; font-size: 2.5rem; cursor: pointer; color: var(--primary-accent); }
+        .modal-close:hover { color: var(--blood-red); text-shadow: 0 0 10px var(--blood-red); }
         
-        .modal-section { margin-bottom: 2rem; }
-        .modal-section h3 { color: var(--primary-accent); margin-bottom: 1rem; font-size: 1.2rem; }
-        .modal-section p { line-height: 1.8; margin-bottom: 1rem; color: #ddd; }
-        .modal-section strong { color: #fff; }
+        #modal-job-title { margin-top: 0; font-size: 2.5rem; color: var(--primary-accent); border-bottom: 2px dashed var(--border-color); padding-bottom: 1rem; }
+        .modal-section { margin-bottom: 2rem; font-family: 'VT323', monospace; font-size: 1.3rem; line-height: 1.6; }
+        .modal-section h3 { color: #fff; font-size: 1.8rem; margin-bottom: 0.5rem; text-decoration: underline; }
+        .modal-section em { color: var(--primary-accent); font-style: normal; }
+        .modal-section strong { color: var(--blood-red); font-weight: normal; }
         
-        #camera-modal-content { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
-        #camera-modal-content h2 { color: var(--primary-accent); text-shadow: 0 0 5px var(--primary-accent); flex-shrink: 0; }
-        #camera-viewfinder { flex-grow: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; min-height: 0; border: 1px solid var(--border-color); }
-        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: sepia(0.2) contrast(1.1); }
-        #camera-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .cam-overlay-el { position: absolute; color: var(--primary-accent); font-size: 1.2em; }
-        .cam-reticle { top: 50%; left: 50%; width: 60px; height: 60px; transform: translate(-50%, -50%); border: 1px solid rgba(0,255,127,0.4); }
-        .cam-info-hd { top: 20px; left: 20px; }
+        /* Camera Modal */
+        #camera-modal-content { display: flex; flex-direction: column; overflow: hidden; border-color: var(--blood-red); box-shadow: 0 0 20px rgba(139, 0, 0, 0.3); }
+        #camera-modal-content h2 { color: var(--blood-red); border-bottom: 2px dashed var(--blood-red); padding-bottom: 1rem;}
+        #camera-viewfinder { flex-grow: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid #333; }
+        #camera-image-display { max-width: 100%; max-height: 100%; object-fit: contain; filter: grayscale(0.4) contrast(1.2); }
+        
+        .cam-overlay-el { position: absolute; color: var(--blood-red); font-size: 1.5rem; text-shadow: 0 0 5px var(--blood-red); }
+        .cam-info-hd { top: 20px; left: 20px; animation: blink 2s infinite; }
         .cam-info-time { bottom: 20px; left: 20px; }
-        #camera-nav { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
-        #camera-nav button { background: transparent; border: 1px solid var(--primary-accent); color: var(--primary-accent); padding: 0.5rem 1rem; cursor: pointer; }
-        #camera-nav button:hover { background-color: var(--primary-accent); color: var(--background); }
         
-        .main-footer { text-align: center; margin-top: 5rem; padding: 2rem 0; border-top: 1px solid var(--border-color); color: var(--secondary-accent); font-size: 0.9rem; }
+        #camera-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+        #camera-nav button { background: transparent; border: 1px solid var(--blood-red); color: var(--blood-red); font-family: 'VT323'; font-size: 1.5rem; padding: 0.5rem 1rem; cursor: pointer; }
+        #camera-nav button:hover { background-color: var(--blood-red); color: #000; }
         
-        /* HORROR OVERLAYS */
+        .main-footer { text-align: center; margin-top: 3rem; padding: 1rem 0; border-top: 1px solid var(--border-color); color: #555; }
+        
+        /* LESHY HORROR OVERLAYS */
         #knock-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.4); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center;
-            color: #f0f0f0; font-family: 'Metal Mania', cursive; text-align: center; padding: 1rem; transition: opacity 0.5s ease-in-out;
+            background: rgba(0, 0, 0, 0.8); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--foreground); font-family: 'Creepster', cursive; text-align: center; transition: opacity 0.5s ease-in-out;
         }
-        #knock-overlay span { font-size: clamp(8rem, 25vw, 20rem); line-height: 0.8; text-shadow: 4px 4px 0px #1a1a1a, 8px 8px 15px rgba(0,0,0,0.5); animation: knock-thump 0.5s ease-out; opacity: 0; }
+        #knock-overlay span { font-size: clamp(8rem, 25vw, 20rem); color: var(--blood-red); text-shadow: 0 0 20px #000; animation: knock-thump 0.5s ease-out; opacity: 0; }
         #knock-overlay.active span:nth-child(1) { animation-delay: 0s; animation-fill-mode: forwards; }
-        #knock-overlay.active span:nth-child(2) { animation-delay: 0.6s; animation-fill-mode: forwards; }
-        #knock-overlay.active span:nth-child(3) { animation-delay: 1.2s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(2) { animation-delay: 0.8s; animation-fill-mode: forwards; }
+        #knock-overlay.active span:nth-child(3) { animation-delay: 1.6s; animation-fill-mode: forwards; }
 
-        @keyframes knock-thump { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes knock-thump { 0% { transform: scale(0.8); opacity: 0; } 20% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
 
         #narrative-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 9999;
-            display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s ease-in-out;
+            display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 1s ease-in-out;
         }
         
-        #dialog-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 700px; z-index: 20; text-align: center; }
-        #dialog-text { font-family: 'Bahiana', cursive; color: #ff3333; text-shadow: 1px 1px 5px #000; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: 2px; }
-        .dialog-choice-btn { font-family: 'Roboto Mono', monospace; font-size: 1.2rem; background: transparent; border: 1px solid #ff3333; color: #ff3333; padding: 1rem 2rem; cursor: pointer; margin-top: 2rem; transition: all 0.3s; }
-        .dialog-choice-btn:hover { background: #ff3333; color: #000; }
+        #dialog-container { width: 80%; text-align: center; }
+        #dialog-text { font-family: 'VT323', monospace; color: #fff; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: 2px; }
+        .dialog-choice-btn { font-family: 'VT323', monospace; font-size: 2rem; background: transparent; border: 2px dashed #555; color: #aaa; padding: 1rem 2rem; cursor: pointer; margin-top: 2rem; transition: all 0.3s; }
+        .dialog-choice-btn:hover { border-color: var(--foreground); color: #fff; background: rgba(255,255,255,0.1); }
 
     </style>
 </head>
@@ -196,9 +170,9 @@
 
     <!-- LESHY KNOCK EVENT -->
     <div id="knock-overlay">
-        <span>KNOCK</span>
-        <span>KNOCK</span>
-        <span>KNOCK</span>
+        <span>THUD</span>
+        <span>THUD</span>
+        <span>THUD</span>
     </div>
 
     <div id="narrative-overlay">
@@ -210,17 +184,13 @@
 
     <!-- MAIN INTERFACE -->
     <div class="site-wrapper">
-        <div id="glitch-overlay">
-            <img src="glitch1.jpg" alt="Glitch">
-            <img src="glitch2.jpg" alt="Glitch">
-        </div>
-
         <div class="container" id="main-container" style="display: none; opacity: 0;">
             <header class="main-header">
-                <div class="logo">OLD_DATA<span>_ARCHIVE</span></div>
+                <div class="logo">OLD_DATA<span>.SYS</span></div>
                 <nav class="main-nav">
-                    <a href="https://youtube.com" target="_blank">[ View Act 1 Video ]</a>
-                    <a id="camera-btn">[ View Image Database ]</a>
+                    <!-- Update this href to the actual YouTube link you found -->
+                    <a href="https://youtube.com" target="_blank">[ACT_1_TAPE.mp4]</a>
+                    <a id="camera-btn">[VIEW_IMAGES.exe]</a>
                 </nav>
             </header>
             
@@ -231,31 +201,29 @@
                         <span class="typing-cursor"></span>
                     </span>
                 </h1>
-                <p>// Recovered from floppy disk sector 4. Proceed with caution. A nested narrative awaits.</p>
+                <p>WARNING: Corrupted nested narrative detected. Proceed with caution.</p>
             </section>
             
             <main>
                 <section class="job-listings-container">
                     <div class="listings-header">
-                        <h2>Recovered Files <span id="job-count"></span></h2>
+                        <h2>C:\Luke_Carder\Wiki_Entry\</h2>
                     </div>
                     <div id="job-listings"></div>
                 </section>
             </main>
             
             <footer class="main-footer">
-                <p>Project 1 — Wiki Entry: Inscryption<br>
-                Sean Lemiski | UVic</p>
+                <p>END OF DIRECTORY<br>Project 1 — Sean Lemiski</p>
             </footer>
         </div>
         
         <!-- ESSAY MODAL -->
         <div class="modal-overlay" id="job-modal">
             <div class="modal-content">
-                <span class="modal-close" id="modal-close-btn">&times;</span>
+                <span class="modal-close" id="modal-close-btn">[X]</span>
                 <div id="modal-body">
                     <h1 id="modal-job-title"></h1>
-                    <p id="modal-company-info"></p>
                     <div id="modal-dynamic-content"></div>
                 </div>
             </div>
@@ -264,21 +232,21 @@
         <!-- IMAGE VIEWER MODAL -->
         <div class="modal-overlay" id="camera-modal">
             <div class="modal-content" id="camera-modal-content">
-                <span class="modal-close" id="camera-modal-close">&times;</span>
-                <h2>// IMAGE_ARCHIVE.sys</h2>
+                <span class="modal-close" id="camera-modal-close">[X]</span>
+                <h2>C:\Luke_Carder\Camera_Roll\</h2>
                 <div id="camera-viewfinder">
+                    <!-- ADD YOUR SCREENSHOTS TO THE FOLDER AND NAME THEM image1.jpg, image2.jpg, image3.jpg -->
                     <img src="" alt="Screenshot" id="camera-image-display">
                     <div id="camera-overlay">
-                        <div class="cam-overlay-el cam-reticle"></div>
                         <div class="cam-overlay-el cam-info-hd">REC</div>
-                        <div class="cam-overlay-el cam-info-time">00:00:00</div>
+                        <div class="cam-overlay-el cam-info-time" id="cam-timer">00:00:00</div>
                     </div>
                 </div>
-                <p id="image-caption" style="text-align: center; margin-top: 1rem; color: #aaa;"></p>
+                <p id="image-caption" style="text-align: center; margin-top: 1rem; font-size: 1.2rem; color: #aaa;"></p>
                 <div id="camera-nav">
-                    <button id="prev-image-btn">&lt;&lt; PREV</button>
-                    <span id="image-counter"></span>
-                    <button id="next-image-btn">NEXT &gt;&gt;</button>
+                    <button id="prev-image-btn">&lt; PREV</button>
+                    <span id="image-counter" style="font-size: 1.5rem; color: var(--blood-red);"></span>
+                    <button id="next-image-btn">NEXT &gt;</button>
                 </div>
             </div>
         </div>
@@ -313,7 +281,7 @@
                             if (index < text.length) {
                                 dialogText.innerHTML = text.substring(0, index + 1);
                                 index++;
-                                setTimeout(typeDialog, 100);
+                                setTimeout(typeDialog, 70); // Slightly faster typing
                             } else {
                                 const btn = document.createElement('button');
                                 btn.className = 'dialog-choice-btn';
@@ -322,9 +290,9 @@
                                 dialogChoices.appendChild(btn);
                             }
                         }
-                        setTimeout(typeDialog, 1000);
-                    }, 500);
-                }, 2500);
+                        setTimeout(typeDialog, 1500);
+                    }, 800);
+                }, 3000);
             }, 1000);
 
             function bootSystem() {
@@ -334,7 +302,7 @@
                     mainContainer.style.display = 'block';
                     requestAnimationFrame(() => mainContainer.style.opacity = '1');
                     startTypingHero();
-                }, 500);
+                }, 800);
             }
 
             // --- HERO TYPING ---
@@ -342,12 +310,12 @@
                 const mainTypingElement = document.getElementById('typing-text-main');
                 const secondaryTypingElement = document.getElementById('typing-text-secondary');
                 const mainText = "Inscryption_OS";
-                const secondaryText = "Project 1 Wiki Entry.";
+                const secondaryText = "Project_1_Wiki_Entry.sys";
                 
                 function typeWriter(element, text, callback, i = 0) {
                     if (i < text.length) {
                         element.innerHTML += text.charAt(i);
-                        setTimeout(() => typeWriter(element, text, callback, i + 1), 100);
+                        setTimeout(() => typeWriter(element, text, callback, i + 1), 60);
                     } else if (callback) callback();
                 }
 
@@ -367,9 +335,9 @@
                     company: "Basic Info & Reflection", 
                     size: "124 KB", 
                     sections: [
-                        { h: "Synopsis", p: "<em>Inscryption</em> is a genre-bending horror mystery game that presents itself as a “nested narrative.” You play as a person who has discovered a haunted floppy disk belonging to a fictional YouTuber called Luke Carder, aka “The Lucky Carder.”<br><br>When you insert the floppy disk, you are transported to an eerie table in a dark cabin, forced to play a high-stakes card game with a shadowy character named Leshy. The game's progression loop is unique because dying feels as if it were expected. Rather than just skipping back to the previous save or starting over, the developer uses loss and death to build the narrative. When you lose a round of cards against Leshy, they turn your soul into a “Deathcard,” which carries into the next game. When you try again, the death card saves your current stats, and you essentially come back stronger than before. The game feels alive while playing, with cards like the Stoat and the Stinkbug sympathetically chatting with you as you play Leshy, siding with you to save you from your almost inevitable demise, and helping you along the way to escape the game.<br><br>Between matches, you are able to leave the table, offering an immediate sense of relief, where you can explore the cabin, feeling similar to an escape room. As you explore it, you come across interactive mini-games like puzzles, as well as discover a deeper lore behind this mysterious floppy disk. The feeling I get while playing it is that I am on my own, trying to survive and eventually escape. The feeling is reflected by what theorist Ewan Kirkland describes as 'Gothic isolation,' which is to make the player feel alone and isolated, which is manifested through physical confinement in remote, uncomfortable settings." },
-                        { h: "Auto-ethnographic Reflection", p: "I discovered <em>Inscryption</em> with almost no card-game experience and was nervous that I had gotten myself into a boring, 'play by numbers' kind of game similar to the ones I would reluctantly play around a table with family as a kid. Instead, straight away, I was hit with a sense of dread and excitement, not from cheap jump scares, but from ominous, heavy, rumbling audio and a dark, thoughtful aesthetic. The game starts with the mechanical, creepy spinning noise of the floppy disk winding up, triggering what researcher Alexander Zawacki calls the 'digital uncanny,' meaning an unsettling feeling that a piece of obsolete technology is alive, or in this case, haunted, which brought a feeling of unease as the game began. Following this, the sounds of creaking old wood and vibrating bass gave me a feeling that I was in for a thoughtfully created gaming experience. Moments into the game, you arrive at the end of a dark table, where across from you a shadowy character says, '…another challenger, it has been years,' giving me the sense that there was a deep lore to discover, and I was a new challenger in an ominous new world." },
-                        { h: "Artistic Analysis", p: "Developer Daniel Mullins uses a design theory he calls the 'Big Butt Principle,' where he takes a safe genre (like a card game) and adds dark, jarring twists. In an interview, Mullins describes himself as a 'digital interior designer'; he doesn’t build the 3D models himself but utilizes high-fidelity assets from artist David Hogoman. He creates a unique atmosphere by editing these objects to have a low-resolution, unsettling, heavy-contrast look. This combination makes the game look like a 'cursed' vintage game. This art style, which Mullins describes as 'aiming for the woe,' meaning pushing for a sense of unease, forced my imagination to fill in the blanks, often with unsettling thoughts, which was appreciated, as I love anything horror." }
+                        { h: "Synopsis", p: "<em>Inscryption</em> is a genre-bending horror mystery game that presents itself as a “nested narrative.” You play as a person who has discovered a haunted floppy disk belonging to a fictional YouTuber called Luke Carder, aka “The Lucky Carder.”<br><br>When you insert the floppy disk, you are transported to an eerie table in a dark cabin, forced to play a high-stakes card game with a shadowy character named Leshy. The game's progression loop is unique because dying feels as if it were expected. Rather than just skipping back to the previous save or starting over, the developer uses loss and death to build the narrative. When you lose a round of cards against Leshy, he turns your soul into a “Deathcard,” which carries into the next game. When you try again, the death card saves your current stats, and you essentially come back stronger than before. The game feels alive while playing, with cards like the Stoat and the Stinkbug sympathetically chatting with you, siding with you to save you from your almost inevitable demise.<br><br>Between matches, you are able to leave the table, offering an immediate sense of relief, where you can explore the cabin in a style similar to an escape room. As you explore, you come across puzzles and discover a deeper lore behind this mysterious floppy disk. The feeling I get while playing is that I am on my own, trying to survive and eventually escape. This is reflected by what theorist Ewan Kirkland describes as 'Gothic isolation,' which makes the player feel alone through physical confinement in remote, uncomfortable settings." },
+                        { h: "Auto-ethnographic Reflection", p: "I discovered <em>Inscryption</em> with almost no card-game experience and was nervous that I had gotten myself into a boring, 'play by numbers' kind of game similar to the ones I would reluctantly play around a table with family as a kid. Instead, straight away, I was hit with a sense of dread and excitement, not from cheap jump scares, but from ominous, heavy, rumbling audio and a dark, thoughtful aesthetic. The game starts with the mechanical, creepy spinning noise of the floppy disk winding up, triggering what researcher Alexander Zawacki calls the 'digital uncanny,' meaning an unsettling feeling that a piece of obsolete technology is alive, or in this case, haunted. Following this, the sounds of creaking old wood and vibrating bass gave me a feeling that I was in for a thoughtfully created gaming experience. Moments into the game, you arrive at the end of a dark table, where across from you a shadowy character says, '…another challenger, it has been years,' giving me the sense that there was a deep lore to discover, and I was a new challenger in an ominous new world." },
+                        { h: "Artistic Analysis", p: "Developer Daniel Mullins uses a design theory he calls the 'Big Butt Principle,' where he takes a safe genre (like a card game) and adds dark, jarring twists. In an interview, Mullins describes himself as a 'digital interior designer'; he doesn’t build the 3D models himself but utilizes high-fidelity assets from artist David Hogoman. He creates a unique atmosphere by editing these objects to have a low-resolution, unsettling, heavy-contrast look. This combination makes the game look like a 'cursed' vintage game. This art style, which Mullins describes as 'aiming for the woe'—meaning pushing for a sense of unease—forced my imagination to fill in the blanks, often with unsettling thoughts." }
                     ]
                 },
                 { 
@@ -379,7 +347,7 @@
                     size: "256 KB", 
                     sections: [
                         { h: "The Meta-Narrative: Found Footage", p: "While the game presents itself as a card game, it is framed through the lens of Luke Carder, the fictional YouTuber who found the disk. This use of Full Motion Video (FMV) sequences creates a 'found footage' aesthetic. Media theorists Jay David Bolter and Richard Grusin describe this as 'remediation,' where new media (the video game) absorbs and refashions old media (the camcorder footage and floppy disk) to achieve a sense of immediacy. By watching Luke react to the game we are playing, the boundary between player and protagonist dissolves." },
-                        { h: "Gameplay Mechanics: Act I", p: "The majority of Act I, aside from exploring the cabin, is spent sitting at a table playing the card game against Leshy. The game is a “rogue-like,” meaning that when you lose, you do go back to the beginning, but not all is lost, as you keep some of what you earned in the previous round, helping you progress.<br><br><strong>The Card Game…</strong> The game takes place on a 4x3 grid board, where you have 4 slots for your own active cards, and on the other side, Leshy has the same. The only difference is that he has an extra 4 slots where you can see which cards he will play on his next turn, giving you a chance to prepare your defense before his animals move to attack yours.<br><br><strong>Winning/Losing…</strong> To win, you must tip a physical brass scale on the table and touch the opponent's end to the ground. Dealing damage adds to the weight (teeth) on their side, and taking damage adds to your side of the scale. If it tips 5 points in either direction, the game ends.<br><br><strong>Power with a Cost…</strong> You cannot play your strongest cards without a cost. The cost is that you must sacrifice a weaker animal/bug (card) you have placed on the board, giving the stronger animals the required “blood” to be played. This uses media theorist Ian Bogost’s 'procedural rhetoric,” meaning that a board game’s rules determine how the world of Inscryption works, basically saying that survival in the cabin requires ritualistic sacrifice, giving the stronger animals the required “blood” to be played. Other cards require bones, which are acquired from one of your creatures dying.<br><br><strong>The Map…</strong> Between card games with Leshy, you move a small wooden chess-like character across the board. During so, you are made to make choices, deciding which path to take, some leading to more battles, others leading to “Events,” being comfortable campfires and such, where you can strengthen your abilities, and others leading to Traders who give you tools to use in upcoming matches.<br><br><strong>The bosses…</strong> At the end of each map, a boss fight is waiting. Bosses like the Prospector or the Angler, where behind the mask, it's Leshy playing their role. Each boss is witty and often “cheats”; for example, the Angler can hook your cards and pull them over to his side of the table to play against you, creating a more challenging fight." }
+                        { h: "Gameplay Mechanics: Act I", p: "The majority of Act I, aside from exploring the cabin, is spent sitting at a table playing the card game against Leshy. The game is a “rogue-like,” meaning that when you lose, you do go back to the beginning, but not all is lost, as you keep some of what you earned in the previous round.<br><br><strong>The Card Game:</strong> The game takes place on a 4x3 grid board, where you have 4 slots for your own active cards, and Leshy has the same. The difference is that he has an extra row where you can see which cards he will play on his next turn, giving you a chance to prepare your defense before his animals move to attack.<br><br><strong>Winning and Losing:</strong> To win, you must tip a physical brass scale on the table. Dealing damage adds to the weight (teeth) on the opponent's side. If it tips 5 points, the game ends. However, the game is rigged against you. Bosses like the Angler often 'cheat'—hooking your cards and stealing them.<br><br><strong>Power with a Cost:</strong> You cannot play your strongest cards without a cost. You must sacrifice a weaker creature you have placed on the board, giving the stronger animals the required “blood” to be played. This utilizes media theorist Ian Bogost’s concept of 'procedural rhetoric,” meaning that a game’s rules enforce its ideology. In <em>Inscryption</em>, the mechanics force you to understand that survival in the cabin requires ritualistic sacrifice." }
                     ]
                 },
                 { 
@@ -413,7 +381,6 @@
             ];
 
             const jobListingsElement = document.getElementById('job-listings');
-            document.getElementById('job-count').textContent = `[${fileData.length} files]`;
             
             fileData.forEach(file => {
                 const card = document.createElement('div');
@@ -432,12 +399,11 @@
                 if (card) {
                     const file = fileData.find(f => f.id == card.dataset.id);
                     document.getElementById('modal-job-title').textContent = file.title;
-                    document.getElementById('modal-company-info').textContent = file.company;
                     
                     const dynamicContent = document.getElementById('modal-dynamic-content');
                     dynamicContent.innerHTML = '';
                     file.sections.forEach(sec => {
-                        dynamicContent.innerHTML += `<div class="modal-section"><h3>// ${sec.h}</h3><p>${sec.p}</p></div>`;
+                        dynamicContent.innerHTML += `<div class="modal-section"><h3>${sec.h}</h3><p>${sec.p}</p></div>`;
                     });
                     
                     jobModal.classList.add('active');
@@ -454,18 +420,17 @@
             const imageCounter = document.getElementById('image-counter');
             let currentImageIndex = 0;
 
-            // YOU MUST PUT THESE IMAGES IN YOUR FOLDER
             const archiveImages = [
-                { src: 'image1.jpg', cap: "Figure 1: The card table in Act I. The physical brass scale underscores Bogost’s theory of procedural rhetoric." },
-                { src: 'image2.jpg', cap: "Figure 2: Leshy reaching across the table. The aesthetic creates what Zawacki calls the 'digital uncanny'." },
-                { src: 'image3.jpg', cap: "Figure 3: The visual shift in Act II/III highlights the metafictional nature of the game as unstable software." }
+                { src: 'image1.jpg', cap: "Fig 1: The card table in Act I. The brass scale underscores Bogost’s theory of procedural rhetoric." },
+                { src: 'image2.jpg', cap: "Fig 2: Leshy reaching across the table. The aesthetic creates what Zawacki calls the 'digital uncanny'." },
+                { src: 'image3.jpg', cap: "Fig 3: The visual shift in Act II/III highlights the metafictional nature of the game as unstable software." }
             ];
 
             function showImage(index) {
                 currentImageIndex = index;
                 cameraImageDisplay.src = archiveImages[index].src;
                 imageCaption.textContent = archiveImages[index].cap;
-                imageCounter.textContent = `FILE: 0${index + 1} / 0${archiveImages.length}`;
+                imageCounter.textContent = `${index + 1} / ${archiveImages.length}`;
             }
 
             cameraBtn.addEventListener('click', () => {
@@ -476,6 +441,12 @@
             document.getElementById('camera-modal-close').addEventListener('click', () => cameraModal.classList.remove('active'));
             document.getElementById('prev-image-btn').addEventListener('click', () => { if(currentImageIndex > 0) showImage(currentImageIndex - 1); });
             document.getElementById('next-image-btn').addEventListener('click', () => { if(currentImageIndex < archiveImages.length - 1) showImage(currentImageIndex + 1); });
+
+            // Fake Timer for Camcorder
+            setInterval(() => {
+                const d = new Date();
+                document.getElementById('cam-timer').textContent = d.toTimeString().split(' ')[0];
+            }, 1000);
 
             // Close modals on Escape key
             document.addEventListener('keydown', (e) => { 
